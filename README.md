@@ -3,7 +3,7 @@
 Field for picking image(s) from Gallery or Camera for flutter_form_builder  package
 
 ## Usage
-
+```dart
 FormBuilder(
   child: Column(
     mainAxisAlignment: MainAxisAlignment.center,
@@ -22,3 +22,4 @@ FormBuilder(
     ],
   ),
 ),
+```

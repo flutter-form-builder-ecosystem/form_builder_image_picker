@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
+  final _formKey = GlobalKey<FormBuilderState>();
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +42,11 @@ class MyHomePage extends StatelessWidget {
                   maxImages: 1,
                 ),
                 const SizedBox(height: 15),
+                RaisedButton(onPressed: () {
+                  if (_formKey.currentState.saveAndValidate()) {
+                    print(_formKey.currentState.value);
+                  }
+                })
               ],
             ),
           ),

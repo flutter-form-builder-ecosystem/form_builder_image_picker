@@ -13,21 +13,21 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
   //TODO: Add documentation
   final double previewWidth;
   final double previewHeight;
-  final EdgeInsets previewMargin;
-  final ImageProvider placeholderImage;
+  final EdgeInsets? previewMargin;
+  final ImageProvider? placeholderImage;
 
-  final Color iconColor;
+  final Color? iconColor;
 
   /// Optional maximum height of image; see [ImagePicker].
-  final double maxHeight;
+  final double? maxHeight;
 
   /// Optional maximum width of image; see [ImagePicker].
-  final double maxWidth;
+  final double? maxWidth;
 
   /// The imageQuality argument modifies the quality of the image, ranging from
   /// 0-100 where 100 is the original/max quality. If imageQuality is null, the
   /// image with the original quality will be returned. See [ImagePicker].
-  final int imageQuality;
+  final int? imageQuality;
 
   /// Use preferredCameraDevice to specify the camera to use when the source is
   /// `ImageSource.camera`. The preferredCameraDevice is ignored when source is
@@ -35,8 +35,8 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
   /// supported on the device. Defaults to `CameraDevice.rear`. See [ImagePicker].
   final CameraDevice preferredCameraDevice;
 
-  final void Function(Image) onImage;
-  final int maxImages;
+  final void Function(Image)? onImage;
+  final int? maxImages;
   final Widget cameraIcon;
   final Widget galleryIcon;
   final Widget cameraLabel;
@@ -45,19 +45,19 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
 
   /// Creates field for picking image(s) from Gallery or Camera.
   FormBuilderImagePicker({
-    Key key,
+    Key? key,
     //From Super
-    @required String name,
-    FormFieldValidator<List<dynamic>> validator,
-    List<dynamic> initialValue,
+    required String name,
+    FormFieldValidator<List<dynamic>>? validator,
+    List<dynamic>? initialValue,
     InputDecoration decoration = const InputDecoration(),
-    ValueChanged<List<dynamic>> onChanged,
-    ValueTransformer<List<dynamic>> valueTransformer,
+    ValueChanged<List<dynamic>?>? onChanged,
+    ValueTransformer<List<dynamic>>? valueTransformer,
     bool enabled = true,
-    FormFieldSetter<List<dynamic>> onSaved,
+    FormFieldSetter<List<dynamic>>? onSaved,
     AutovalidateMode autovalidateMode = AutovalidateMode.disabled,
-    VoidCallback onReset,
-    FocusNode focusNode,
+    VoidCallback? onReset,
+    FocusNode? focusNode,
     this.previewWidth = 130,
     this.previewHeight = 130,
     this.previewMargin,
@@ -88,7 +88,7 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
           onReset: onReset,
           decoration: decoration,
           focusNode: focusNode,
-          builder: (FormFieldState<List<dynamic>> field) {
+          builder: (FormFieldState<List<dynamic>?> field) {
             final state = field as _FormBuilderImagePickerState;
             final theme = Theme.of(state.context);
             final disabledColor = theme.disabledColor;
@@ -102,7 +102,7 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
                   scrollDirection: Axis.horizontal,
                   children: [
                     if (field.value != null)
-                      ...field.value.map<Widget>((dynamic item) {
+                      ...field.value!.map<Widget>((dynamic item) {
                         assert(item is File ||
                             item is String ||
                             item is Uint8List);
@@ -126,7 +126,7 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
                                 onTap: () {
                                   state.requestFocus();
                                   field.didChange(
-                                      <dynamic>[...field.value]..remove(item));
+                                      <dynamic>[...?field.value]..remove(item));
                                 },
                                 child: Container(
                                   margin: const EdgeInsets.all(3),
@@ -215,5 +215,5 @@ class _FormBuilderImagePickerState
   bool get hasMaxImages =>
       widget.maxImages != null &&
       value != null &&
-      value.length >= widget.maxImages;
+      value!.length >= widget.maxImages!;
 }

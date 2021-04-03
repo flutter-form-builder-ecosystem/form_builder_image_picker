@@ -33,6 +33,7 @@ class MyHomePage extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Center(
           child: FormBuilder(
+            key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -42,7 +43,9 @@ class MyHomePage extends StatelessWidget {
                   maxImages: 1,
                 ),
                 const SizedBox(height: 15),
-                RaisedButton(onPressed: () {
+                ElevatedButton(
+                  child: Text('Submit'),
+                  onPressed: () {
                   if (_formKey.currentState.saveAndValidate()) {
                     print(_formKey.currentState.value);
                   }

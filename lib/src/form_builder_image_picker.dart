@@ -95,7 +95,7 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
             final primaryColor = theme.primaryColor;
 
             return InputDecorator(
-              decoration: state.decoration(),
+              decoration: state.decoration,
               child: Container(
                 height: previewHeight,
                 child: ListView(

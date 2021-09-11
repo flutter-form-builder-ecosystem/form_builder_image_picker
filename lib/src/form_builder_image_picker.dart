@@ -113,9 +113,8 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
                               width: previewWidth,
                               height: previewHeight,
                               margin: previewMargin,
-                              child: kIsWeb
-                                  ? Image.memory(item as Uint8List,
-                                      fit: BoxFit.cover)
+                              child: item is Uint8List
+                                  ? Image.memory(item, fit: BoxFit.cover)
                                   : item is String
                                       ? Image.network(item, fit: BoxFit.cover)
                                       : Image.file(item as File,

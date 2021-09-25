@@ -40,16 +40,26 @@ class MyHomePage extends StatelessWidget {
                 FormBuilderImagePicker(
                   name: 'photos',
                   decoration: const InputDecoration(labelText: 'Pick Photos'),
-                  maxImages: 1,
+                  maxImages: 3,
+                  initialValue: [
+                    'https://images.pexels.com/photos/7078045/pexels-photo-7078045.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260'
+                  ],
                 ),
                 const SizedBox(height: 15),
                 ElevatedButton(
-                    child: Text('Submit'),
-                    onPressed: () {
-                      if (_formKey.currentState.saveAndValidate()) {
-                        print(_formKey.currentState.value);
-                      }
-                    })
+                  child: Text('Submit'),
+                  onPressed: () {
+                    if (_formKey.currentState.saveAndValidate()) {
+                      print(_formKey.currentState.value);
+                    }
+                  },
+                ),
+                ElevatedButton(
+                  child: Text('Reset'),
+                  onPressed: () {
+                    _formKey.currentState?.reset();
+                  },
+                )
               ],
             ),
           ),

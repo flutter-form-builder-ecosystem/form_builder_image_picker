@@ -1,6 +1,5 @@
-import 'dart:io';
 import 'dart:typed_data';
-
+import 'package:async/async.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -52,12 +51,13 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
     List<dynamic>? initialValue,
     InputDecoration decoration = const InputDecoration(),
     ValueChanged<List<dynamic>?>? onChanged,
-    ValueTransformer<List<dynamic>>? valueTransformer,
+    ValueTransformer<List<dynamic>?>? valueTransformer,
     bool enabled = true,
     FormFieldSetter<List<dynamic>>? onSaved,
     AutovalidateMode autovalidateMode = AutovalidateMode.disabled,
     VoidCallback? onReset,
     FocusNode? focusNode,
+    WidgetBuilder? loadingWidget,
     this.previewWidth = 130,
     this.previewHeight = 130,
     this.previewMargin,
@@ -103,7 +103,7 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
                   children: [
                     if (field.value != null)
                       ...field.value!.map<Widget>((dynamic item) {
-                        assert(item is File ||
+                        assert(item is XFile ||
                             item is String ||
                             item is Uint8List);
                         return Stack(
@@ -117,8 +117,11 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
                                   ? Image.memory(item, fit: BoxFit.cover)
                                   : item is String
                                       ? Image.network(item, fit: BoxFit.cover)
-                                      : Image.file(item as File,
-                                          fit: BoxFit.cover),
+                                      : XFileImage(
+                                          file: item,
+                                          fit: BoxFit.cover,
+                                          loadingWidget: loadingWidget,
+                                        ),
                             ),
                             if (state.enabled)
                               InkWell(
@@ -187,12 +190,6 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
                                       <dynamic>[...?field.value, image]);
                                   Navigator.pop(state.context);
                                 },
-                                onImage: (image) {
-                                  field.didChange(
-                                      <dynamic>[...?field.value, image]);
-                                  onChanged?.call(field.value);
-                                  Navigator.pop(state.context);
-                                },
                               );
                             },
                           );
@@ -215,4 +212,39 @@ class _FormBuilderImagePickerState
       widget.maxImages != null &&
       value != null &&
       value!.length >= widget.maxImages!;
+}
+
+class XFileImage extends StatefulWidget {
+  const XFileImage({
+    Key? key,
+    required this.file,
+    this.fit,
+    this.loadingWidget,
+  }) : super(key: key);
+  final XFile file;
+  final BoxFit? fit;
+  final WidgetBuilder? loadingWidget;
+  @override
+  State<XFileImage> createState() => _XFileImageState();
+}
+
+class _XFileImageState extends State<XFileImage> {
+  final _memoizer = AsyncMemoizer<Uint8List>();
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Uint8List>(
+      future: _memoizer.runOnce(widget.file.readAsBytes),
+      builder: (context, snapshot) {
+        final data = snapshot.data;
+        if (data == null) {
+          return widget.loadingWidget?.call(context) ??
+              Center(
+                child: CircularProgressIndicator(),
+              );
+        }
+        return Image.memory(data, fit: widget.fit);
+      },
+    );
+  }
 }

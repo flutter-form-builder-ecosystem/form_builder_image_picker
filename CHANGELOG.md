@@ -1,4 +1,8 @@
-## [1.0.0-nullsafety.0] - 03-Apr-2020
+## [2.0.0] - 28-Oct-2021
+* Use XFile instead of the old picker
+* Proper null safety
+
+## [1.0.0-nullsafety.0] - 03-Apr-2021
 * Started working on null-safety
 
 ## [0.1.2] - 31-Dec-2020

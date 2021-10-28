@@ -21,7 +21,7 @@ class ImageSourceBottomSheet extends StatefulWidget {
   final CameraDevice preferredCameraDevice;
 
   /// Callback when an image is selected.
-  final void Function(XFile)? onImageSelected;
+  final void Function(XFile) onImageSelected;
 
   final Widget? cameraIcon;
   final Widget? galleryIcon;
@@ -35,14 +35,13 @@ class ImageSourceBottomSheet extends StatefulWidget {
     this.maxWidth,
     this.imageQuality,
     this.preferredCameraDevice = CameraDevice.rear,
-    this.onImageSelected,
+    required this.onImageSelected,
     this.cameraIcon,
     this.galleryIcon,
     this.cameraLabel,
     this.galleryLabel,
     this.bottomSheetPadding,
-  })  : assert(null != onImageSelected),
-        super(key: key);
+  }) : super(key: key);
 
   @override
   _ImageSourceBottomSheetState createState() => _ImageSourceBottomSheetState();
@@ -64,7 +63,7 @@ class _ImageSourceBottomSheetState extends State<ImageSourceBottomSheet> {
     );
     _isPickingImage = false;
     if (pickedFile != null) {
-      widget.onImageSelected?.call(pickedFile);
+      widget.onImageSelected(pickedFile);
     }
   }
 

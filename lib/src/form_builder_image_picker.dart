@@ -56,6 +56,7 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
   final Widget cameraLabel;
   final Widget galleryLabel;
   final EdgeInsets bottomSheetPadding;
+  final bool preventPop;
 
   /// fit for each image
   final BoxFit fit;
@@ -76,6 +77,7 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
     FocusNode? focusNode,
     WidgetBuilder? loadingWidget,
     this.fit = BoxFit.cover,
+    this.preventPop = false,
     this.displayCustomType,
     this.previewWidth = 130,
     this.previewHeight = 130,
@@ -142,6 +144,7 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
                         'Consider using displayCustomType to handle the type: ${displayItem.runtimeType}',
                       );
                       return Stack(
+                        key: ObjectKey(item),
                         alignment: Alignment.topRight,
                         children: <Widget>[
                           Container(
@@ -193,6 +196,7 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
                       );
                     } else {
                       return GestureDetector(
+                        key: UniqueKey(),
                         child: placeholderImage != null
                             ? Image(
                                 width: previewWidth,
@@ -212,13 +216,18 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
                                         ? iconColor ?? primaryColor
                                         : disabledColor)
                                     .withAlpha(50)),
-                        onTap: () {
-                          showModalBottomSheet<void>(
+                        onTap: () async {
+                          final remainingImages = maxImages == null
+                              ? null
+                              : maxImages - value.length;
+                          await showModalBottomSheet<void>(
                             context: state.context,
                             builder: (_) {
                               return ImageSourceBottomSheet(
                                 maxHeight: maxHeight,
                                 maxWidth: maxWidth,
+                                preventPop: preventPop,
+                                remainingImages: remainingImages,
                                 imageQuality: imageQuality,
                                 preferredCameraDevice: preferredCameraDevice,
                                 bottomSheetPadding: bottomSheetPadding,
@@ -228,12 +237,28 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
                                 galleryLabel: galleryLabel,
                                 onImageSelected: (image) {
                                   state.requestFocus();
-                                  field.didChange(value.toList()..add(image));
+                                  field.didChange([...value, ...image]);
                                   Navigator.pop(state.context);
                                 },
                               );
                             },
                           );
+                          // if (remainingImages == 1) {
+                          // } else {
+                          //   final imagePicker = ImagePicker();
+                          //   final picked = await imagePicker.pickMultiImage(
+                          //     maxHeight: maxHeight,
+                          //     maxWidth: maxWidth,
+                          //     imageQuality: imageQuality,
+                          //   );
+                          //   if (picked != null) {
+                          //     state.requestFocus();
+                          //     final actualPicked = remainingImages == null
+                          //         ? picked
+                          //         : picked.take(remainingImages);
+                          //     field.didChange([...value, ...actualPicked]);
+                          //   }
+                          // }
                         },
                       );
                     }

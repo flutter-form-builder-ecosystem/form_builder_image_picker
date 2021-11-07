@@ -14,6 +14,8 @@ class ImageSourceBottomSheet extends StatefulWidget {
   /// image with the original quality will be returned.
   final int? imageQuality;
 
+  final int? remainingImages;
+
   /// Use preferredCameraDevice to specify the camera to use when the source is
   /// `ImageSource.camera`. The preferredCameraDevice is ignored when source is
   /// `ImageSource.gallery`. It is also ignored if the chosen camera is not
@@ -21,16 +23,19 @@ class ImageSourceBottomSheet extends StatefulWidget {
   final CameraDevice preferredCameraDevice;
 
   /// Callback when an image is selected.
-  final void Function(XFile) onImageSelected;
+  final void Function(Iterable<XFile> files) onImageSelected;
 
   final Widget? cameraIcon;
   final Widget? galleryIcon;
   final Widget? cameraLabel;
   final Widget? galleryLabel;
   final EdgeInsets? bottomSheetPadding;
+  final bool preventPop;
 
   ImageSourceBottomSheet({
     Key? key,
+    this.remainingImages,
+    this.preventPop = false,
     this.maxHeight,
     this.maxWidth,
     this.imageQuality,
@@ -54,40 +59,61 @@ class _ImageSourceBottomSheetState extends State<ImageSourceBottomSheet> {
     if (_isPickingImage) return;
     _isPickingImage = true;
     final imagePicker = ImagePicker();
-    final pickedFile = await imagePicker.pickImage(
-      source: source,
-      maxHeight: widget.maxHeight,
-      maxWidth: widget.maxWidth,
-      imageQuality: widget.imageQuality,
-      preferredCameraDevice: widget.preferredCameraDevice,
-    );
-    _isPickingImage = false;
-    if (pickedFile != null) {
-      widget.onImageSelected(pickedFile);
+    try {
+      if (source == ImageSource.camera || widget.remainingImages == 1) {
+        final pickedFile = await imagePicker.pickImage(
+          source: source,
+          preferredCameraDevice: widget.preferredCameraDevice,
+          maxHeight: widget.maxHeight,
+          maxWidth: widget.maxWidth,
+          imageQuality: widget.imageQuality,
+        );
+        _isPickingImage = false;
+        if (pickedFile != null) {
+          widget.onImageSelected([pickedFile]);
+        }
+      } else {
+        final pickedFiles = await imagePicker.pickMultiImage(
+          maxHeight: widget.maxHeight,
+          maxWidth: widget.maxWidth,
+          imageQuality: widget.imageQuality,
+        );
+        _isPickingImage = false;
+        if (pickedFiles != null && pickedFiles.length > 0) {
+          widget.onImageSelected(pickedFiles);
+        }
+      }
+    } catch (e) {
+      _isPickingImage = false;
+      rethrow;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => !_isPickingImage,
-      child: Container(
-        padding: widget.bottomSheetPadding,
-        child: Wrap(
-          children: <Widget>[
-            ListTile(
-              leading: widget.cameraIcon,
-              title: widget.cameraLabel,
-              onTap: () => _onPickImage(ImageSource.camera),
-            ),
-            ListTile(
-              leading: widget.galleryIcon,
-              title: widget.galleryLabel,
-              onTap: () => _onPickImage(ImageSource.gallery),
-            ),
-          ],
-        ),
+    Widget res = Container(
+      padding: widget.bottomSheetPadding,
+      child: Wrap(
+        children: <Widget>[
+          ListTile(
+            leading: widget.cameraIcon,
+            title: widget.cameraLabel,
+            onTap: () => _onPickImage(ImageSource.camera),
+          ),
+          ListTile(
+            leading: widget.galleryIcon,
+            title: widget.galleryLabel,
+            onTap: () => _onPickImage(ImageSource.gallery),
+          ),
+        ],
       ),
     );
+    if (widget.preventPop) {
+      res = WillPopScope(
+        onWillPop: () async => !_isPickingImage,
+        child: res,
+      );
+    }
+    return res;
   }
 }

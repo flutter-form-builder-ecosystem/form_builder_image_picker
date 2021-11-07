@@ -77,17 +77,9 @@ class _ImageSourceBottomSheetState extends State<ImageSourceBottomSheet> {
     _isPickingImage = false;
     if (null != pickedFile) {
       if (kIsWeb) {
-        if (null != widget.onImage) {
-          widget.onImage!(await pickedFile.readAsBytes());
-        }
+        widget.onImage?.call(await pickedFile.readAsBytes());
       } else {
-        if (null != widget.onImageSelected) {
-          // Warning:  this will not work on the web platform because pickedFile
-          // will instead point to a network resource.
-          final imageFile = File(pickedFile.path);
-          // assert(null != imageFile);
-          widget.onImageSelected!(imageFile);
-        }
+        widget.onImageSelected?.call(File(pickedFile.path));
       }
     }
   }

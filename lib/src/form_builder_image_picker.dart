@@ -1,6 +1,5 @@
-import 'dart:io';
 import 'dart:typed_data';
-
+import 'package:async/async.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -9,6 +8,14 @@ import 'package:image_picker/image_picker.dart';
 import 'image_source_sheet.dart';
 
 /// Field for picking image(s) from Gallery or Camera.
+///
+/// Field value is a list of objects.
+///
+/// the widget can internally handle displaying objects of type [XFile],[Uint8List],[String] (for an image url),[ImageProvider] (for any flutter image), [Widget] (for any widget)
+/// and appends [XFile] to the list for picked images.
+///
+/// if you want to use a different object (e.g. a class from the backend that has imageId and imageUrl)
+/// you need to implement [displayCustomType]
 class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
   //TODO: Add documentation
   final double previewWidth;
@@ -35,6 +42,13 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
   /// supported on the device. Defaults to `CameraDevice.rear`. See [ImagePicker].
   final CameraDevice preferredCameraDevice;
 
+  /// use this to get an image from a custom object to either [Uint8List] or [XFile] or [String] (url) or [ImageProvider]
+  ///
+  /// ```dart
+  /// (obj) => obj is MyApiFileClass ? obj.imageUrl : obj;
+  /// ```
+  final dynamic Function(dynamic obj)? displayCustomType;
+
   final void Function(Image)? onImage;
   final int? maxImages;
   final Widget cameraIcon;
@@ -42,8 +56,11 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
   final Widget cameraLabel;
   final Widget galleryLabel;
   final EdgeInsets bottomSheetPadding;
+  final bool preventPop;
 
-  /// Creates field for picking image(s) from Gallery or Camera.
+  /// fit for each image
+  final BoxFit fit;
+
   FormBuilderImagePicker({
     Key? key,
     //From Super
@@ -52,12 +69,16 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
     List<dynamic>? initialValue,
     InputDecoration decoration = const InputDecoration(),
     ValueChanged<List<dynamic>?>? onChanged,
-    ValueTransformer<List<dynamic>>? valueTransformer,
+    ValueTransformer<List<dynamic>?>? valueTransformer,
     bool enabled = true,
     FormFieldSetter<List<dynamic>>? onSaved,
     AutovalidateMode autovalidateMode = AutovalidateMode.disabled,
     VoidCallback? onReset,
     FocusNode? focusNode,
+    WidgetBuilder? loadingWidget,
+    this.fit = BoxFit.cover,
+    this.preventPop = false,
+    this.displayCustomType,
     this.previewWidth = 130,
     this.previewHeight = 130,
     this.previewMargin,
@@ -93,61 +114,89 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
             final theme = Theme.of(state.context);
             final disabledColor = theme.disabledColor;
             final primaryColor = theme.primaryColor;
+            final value = state.effectiveValue;
+            final canUpload = state.enabled && !state.hasMaxImages;
 
             return InputDecorator(
               decoration: state.decoration,
               child: Container(
                 height: previewHeight,
-                child: ListView(
+                child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  children: [
-                    if (field.value != null)
-                      ...field.value!.map<Widget>((dynamic item) {
-                        assert(item is File ||
-                            item is String ||
-                            item is Uint8List);
-                        return Stack(
-                          alignment: Alignment.topRight,
-                          children: <Widget>[
-                            Container(
-                              width: previewWidth,
-                              height: previewHeight,
-                              margin: previewMargin,
-                              child: item is Uint8List
-                                  ? Image.memory(item, fit: BoxFit.cover)
-                                  : item is String
-                                      ? Image.network(item, fit: BoxFit.cover)
-                                      : Image.file(item as File,
-                                          fit: BoxFit.cover),
-                            ),
-                            if (state.enabled)
-                              InkWell(
-                                onTap: () {
-                                  state.requestFocus();
-                                  field.didChange(
-                                      <dynamic>[...?field.value]..remove(item));
-                                },
-                                child: Container(
-                                  margin: const EdgeInsets.all(3),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.withOpacity(.7),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  alignment: Alignment.center,
-                                  height: 22,
-                                  width: 22,
-                                  child: const Icon(
-                                    Icons.close,
-                                    size: 18,
-                                    color: Colors.white,
-                                  ),
+                  itemCount: value.length + (canUpload ? 1 : 0),
+                  itemBuilder: (context, index) {
+                    if (index < value.length) {
+                      final item = value[index];
+                      bool checkIfItemIsCustomType(dynamic e) => !(e is XFile ||
+                          e is String ||
+                          e is Uint8List ||
+                          e is ImageProvider ||
+                          e is Widget);
+
+                      final itemCustomType = checkIfItemIsCustomType(item);
+                      var displayItem = item;
+                      if (itemCustomType && displayCustomType != null) {
+                        displayItem = displayCustomType(item);
+                      }
+                      assert(
+                        !checkIfItemIsCustomType(displayItem),
+                        'Display item must be of type [Uint8List], [XFile], [String] (url), [ImageProvider] or [Widget]. '
+                        'Consider using displayCustomType to handle the type: ${displayItem.runtimeType}',
+                      );
+                      return Stack(
+                        key: ObjectKey(item),
+                        alignment: Alignment.topRight,
+                        children: <Widget>[
+                          Container(
+                            width: previewWidth,
+                            height: previewHeight,
+                            margin: previewMargin,
+                            child: displayItem is Widget
+                                ? displayItem
+                                : displayItem is ImageProvider
+                                    ? Image(image: displayItem, fit: fit)
+                                    : displayItem is Uint8List
+                                        ? Image.memory(displayItem, fit: fit)
+                                        : displayItem is String
+                                            ? Image.network(
+                                                displayItem,
+                                                fit: fit,
+                                              )
+                                            : XFileImage(
+                                                file: displayItem,
+                                                fit: fit,
+                                                loadingWidget: loadingWidget,
+                                              ),
+                          ),
+                          if (state.enabled)
+                            InkWell(
+                              onTap: () {
+                                state.requestFocus();
+                                field.didChange(
+                                  value.toList()..removeAt(index),
+                                );
+                              },
+                              child: Container(
+                                margin: const EdgeInsets.all(3),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.withOpacity(.7),
+                                  shape: BoxShape.circle,
+                                ),
+                                alignment: Alignment.center,
+                                height: 22,
+                                width: 22,
+                                child: const Icon(
+                                  Icons.close,
+                                  size: 18,
+                                  color: Colors.white,
                                 ),
                               ),
-                          ],
-                        );
-                      }),
-                    if (state.enabled && !state.hasMaxImages)
-                      GestureDetector(
+                            ),
+                        ],
+                      );
+                    } else {
+                      return GestureDetector(
+                        key: UniqueKey(),
                         child: placeholderImage != null
                             ? Image(
                                 width: previewWidth,
@@ -167,13 +216,18 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
                                         ? iconColor ?? primaryColor
                                         : disabledColor)
                                     .withAlpha(50)),
-                        onTap: () {
-                          showModalBottomSheet<void>(
+                        onTap: () async {
+                          final remainingImages = maxImages == null
+                              ? null
+                              : maxImages - value.length;
+                          await showModalBottomSheet<void>(
                             context: state.context,
                             builder: (_) {
                               return ImageSourceBottomSheet(
                                 maxHeight: maxHeight,
                                 maxWidth: maxWidth,
+                                preventPop: preventPop,
+                                remainingImages: remainingImages,
                                 imageQuality: imageQuality,
                                 preferredCameraDevice: preferredCameraDevice,
                                 bottomSheetPadding: bottomSheetPadding,
@@ -183,22 +237,32 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
                                 galleryLabel: galleryLabel,
                                 onImageSelected: (image) {
                                   state.requestFocus();
-                                  field.didChange(
-                                      <dynamic>[...?field.value, image]);
-                                  Navigator.pop(state.context);
-                                },
-                                onImage: (image) {
-                                  field.didChange(
-                                      <dynamic>[...?field.value, image]);
-                                  onChanged?.call(field.value);
+                                  field.didChange([...value, ...image]);
                                   Navigator.pop(state.context);
                                 },
                               );
                             },
                           );
+                          // if (remainingImages == 1) {
+                          // } else {
+                          //   final imagePicker = ImagePicker();
+                          //   final picked = await imagePicker.pickMultiImage(
+                          //     maxHeight: maxHeight,
+                          //     maxWidth: maxWidth,
+                          //     imageQuality: imageQuality,
+                          //   );
+                          //   if (picked != null) {
+                          //     state.requestFocus();
+                          //     final actualPicked = remainingImages == null
+                          //         ? picked
+                          //         : picked.take(remainingImages);
+                          //     field.didChange([...value, ...actualPicked]);
+                          //   }
+                          // }
                         },
-                      ),
-                  ],
+                      );
+                    }
+                  },
                 ),
               ),
             );
@@ -211,8 +275,45 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
 
 class _FormBuilderImagePickerState
     extends FormBuilderFieldState<FormBuilderImagePicker, List<dynamic>> {
-  bool get hasMaxImages =>
-      widget.maxImages != null &&
-      value != null &&
-      value!.length >= widget.maxImages!;
+  List<dynamic> get effectiveValue =>
+      value?.where((element) => element != null).toList() ?? [];
+  bool get hasMaxImages {
+    final ev = effectiveValue;
+    return widget.maxImages != null && ev.length >= widget.maxImages!;
+  }
+}
+
+class XFileImage extends StatefulWidget {
+  const XFileImage({
+    Key? key,
+    required this.file,
+    this.fit,
+    this.loadingWidget,
+  }) : super(key: key);
+  final XFile file;
+  final BoxFit? fit;
+  final WidgetBuilder? loadingWidget;
+  @override
+  State<XFileImage> createState() => _XFileImageState();
+}
+
+class _XFileImageState extends State<XFileImage> {
+  final _memoizer = AsyncMemoizer<Uint8List>();
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Uint8List>(
+      future: _memoizer.runOnce(widget.file.readAsBytes),
+      builder: (context, snapshot) {
+        final data = snapshot.data;
+        if (data == null) {
+          return widget.loadingWidget?.call(context) ??
+              Center(
+                child: CircularProgressIndicator(),
+              );
+        }
+        return Image.memory(data, fit: widget.fit);
+      },
+    );
+  }
 }

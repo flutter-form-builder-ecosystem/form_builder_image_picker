@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+
 import 'package:async/async.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -119,7 +120,7 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
 
             return InputDecorator(
               decoration: state.decoration,
-              child: Container(
+              child: SizedBox(
                 height: previewHeight,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
@@ -277,6 +278,7 @@ class _FormBuilderImagePickerState
     extends FormBuilderFieldState<FormBuilderImagePicker, List<dynamic>> {
   List<dynamic> get effectiveValue =>
       value?.where((element) => element != null).toList() ?? [];
+
   bool get hasMaxImages {
     final ev = effectiveValue;
     return widget.maxImages != null && ev.length >= widget.maxImages!;
@@ -293,6 +295,7 @@ class XFileImage extends StatefulWidget {
   final XFile file;
   final BoxFit? fit;
   final WidgetBuilder? loadingWidget;
+
   @override
   State<XFileImage> createState() => _XFileImageState();
 }
@@ -308,9 +311,7 @@ class _XFileImageState extends State<XFileImage> {
         final data = snapshot.data;
         if (data == null) {
           return widget.loadingWidget?.call(context) ??
-              Center(
-                child: CircularProgressIndicator(),
-              );
+              const Center(child: CircularProgressIndicator());
         }
         return Image.memory(data, fit: widget.fit);
       },

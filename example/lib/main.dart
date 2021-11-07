@@ -4,10 +4,12 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -33,11 +35,13 @@ class ApiImage {
 class MyHomePage extends StatelessWidget {
   final _formKey = GlobalKey<FormBuilderState>();
 
+  MyHomePage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('FormBuilderImagePicker Example'),
+        title: const Text('FormBuilderImagePicker Example'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -55,7 +59,7 @@ class MyHomePage extends StatelessWidget {
                   maxImages: 5,
                   initialValue: [
                     'https://images.pexels.com/photos/7078045/pexels-photo-7078045.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-                    Text('this is an image\nas a widget !'),
+                    const Text('this is an image\nas a widget !'),
                     ApiImage(
                       id: 'whatever',
                       imageUrl:
@@ -65,15 +69,15 @@ class MyHomePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 15),
                 ElevatedButton(
-                  child: Text('Submit'),
+                  child: const Text('Submit'),
                   onPressed: () {
                     if (_formKey.currentState?.saveAndValidate() == true) {
-                      print(_formKey.currentState!.value);
+                      debugPrint(_formKey.currentState!.value.toString());
                     }
                   },
                 ),
                 ElevatedButton(
-                  child: Text('Reset'),
+                  child: const Text('Reset'),
                   onPressed: () {
                     _formKey.currentState?.reset();
                   },

@@ -32,7 +32,7 @@ class ImageSourceBottomSheet extends StatefulWidget {
   final EdgeInsets? bottomSheetPadding;
   final bool preventPop;
 
-  ImageSourceBottomSheet({
+  const ImageSourceBottomSheet({
     Key? key,
     this.remainingImages,
     this.preventPop = false,
@@ -79,7 +79,7 @@ class _ImageSourceBottomSheetState extends State<ImageSourceBottomSheet> {
           imageQuality: widget.imageQuality,
         );
         _isPickingImage = false;
-        if (pickedFiles != null && pickedFiles.length > 0) {
+        if (pickedFiles != null && pickedFiles.isNotEmpty) {
           widget.onImageSelected(pickedFiles);
         }
       }

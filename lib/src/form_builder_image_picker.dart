@@ -18,11 +18,30 @@ import 'image_source_sheet.dart';
 /// if you want to use a different object (e.g. a class from the backend that has imageId and imageUrl)
 /// you need to implement [displayCustomType]
 class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
-  //TODO: Add documentation
+  /// set to true to insert an [InputDecorator] which displays labels, borders, etc...
+  ///
+  /// when [maxImages] == 1, it's better to set this to false
+  final bool showDecoration;
+
+  /// set to true to let images decide their own width
+  ///
+  /// when [maxImages] == 1, it's better to set this to true
+  final bool previewAutoSizeWidth;
+
+  /// the width of image previews, also see [previewAutoSizeWidth]
   final double previewWidth;
+
+  /// the height of image previews
   final double previewHeight;
-  final EdgeInsets? previewMargin;
+
+  /// margins between image previews
+  final EdgeInsetsGeometry? previewMargin;
+
+  /// placeholder image displayed when picking a new image
   final ImageProvider? placeholderImage;
+
+  /// placeholder widget displayed when picking a new image
+  final Widget? placeholderWidget;
 
   final Color? iconColor;
 
@@ -51,7 +70,15 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
   final dynamic Function(dynamic obj)? displayCustomType;
 
   final void Function(Image)? onImage;
+
+  /// maximum images to pick
+  ///
+  /// also see [showDecoration],[previewAutoSizeWidth]
   final int? maxImages;
+
+  final Widget Function(BuildContext context, Widget displayImage)?
+      transformImageWidget;
+
   final Widget cameraIcon;
   final Widget galleryIcon;
   final Widget cameraLabel;
@@ -77,6 +104,10 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
     VoidCallback? onReset,
     FocusNode? focusNode,
     WidgetBuilder? loadingWidget,
+    this.transformImageWidget,
+    this.showDecoration = true,
+    this.placeholderWidget,
+    this.previewAutoSizeWidth = true,
     this.fit = BoxFit.cover,
     this.preventPop = false,
     this.displayCustomType,
@@ -118,95 +149,22 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
             final value = state.effectiveValue;
             final canUpload = state.enabled && !state.hasMaxImages;
 
-            return InputDecorator(
-              decoration: state.decoration,
-              child: SizedBox(
-                height: previewHeight,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: value.length + (canUpload ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    if (index < value.length) {
-                      final item = value[index];
-                      bool checkIfItemIsCustomType(dynamic e) => !(e is XFile ||
-                          e is String ||
-                          e is Uint8List ||
-                          e is ImageProvider ||
-                          e is Widget);
+            /// how many items to display in the list view (including upload btn)
+            final itemCount = value.length + (canUpload ? 1 : 0);
 
-                      final itemCustomType = checkIfItemIsCustomType(item);
-                      var displayItem = item;
-                      if (itemCustomType && displayCustomType != null) {
-                        displayItem = displayCustomType(item);
-                      }
-                      assert(
-                        !checkIfItemIsCustomType(displayItem),
-                        'Display item must be of type [Uint8List], [XFile], [String] (url), [ImageProvider] or [Widget]. '
-                        'Consider using displayCustomType to handle the type: ${displayItem.runtimeType}',
-                      );
-                      return Stack(
-                        key: ObjectKey(item),
-                        alignment: Alignment.topRight,
-                        children: <Widget>[
-                          Container(
-                            width: previewWidth,
-                            height: previewHeight,
-                            margin: previewMargin,
-                            child: displayItem is Widget
-                                ? displayItem
-                                : displayItem is ImageProvider
-                                    ? Image(image: displayItem, fit: fit)
-                                    : displayItem is Uint8List
-                                        ? Image.memory(displayItem, fit: fit)
-                                        : displayItem is String
-                                            ? Image.network(
-                                                displayItem,
-                                                fit: fit,
-                                              )
-                                            : XFileImage(
-                                                file: displayItem,
-                                                fit: fit,
-                                                loadingWidget: loadingWidget,
-                                              ),
-                          ),
-                          if (state.enabled)
-                            InkWell(
-                              onTap: () {
-                                state.requestFocus();
-                                field.didChange(
-                                  value.toList()..removeAt(index),
-                                );
-                              },
-                              child: Container(
-                                margin: const EdgeInsets.all(3),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.withOpacity(.7),
-                                  shape: BoxShape.circle,
-                                ),
-                                alignment: Alignment.center,
-                                height: 22,
-                                width: 22,
-                                child: const Icon(
-                                  Icons.close,
-                                  size: 18,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                        ],
-                      );
-                    } else {
-                      return GestureDetector(
-                        key: UniqueKey(),
+            Widget addButtonBuilder(
+              BuildContext context,
+            ) =>
+                GestureDetector(
+                  key: UniqueKey(),
+                  child: placeholderWidget ??
+                      SizedBox(
+                        width: previewWidth,
                         child: placeholderImage != null
                             ? Image(
-                                width: previewWidth,
-                                height: previewHeight,
                                 image: placeholderImage,
                               )
                             : Container(
-                                width: previewWidth,
-                                height: previewHeight,
                                 child: Icon(
                                   Icons.camera_enhance,
                                   color: state.enabled
@@ -216,57 +174,152 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
                                 color: (state.enabled
                                         ? iconColor ?? primaryColor
                                         : disabledColor)
-                                    .withAlpha(50)),
-                        onTap: () async {
-                          final remainingImages = maxImages == null
-                              ? null
-                              : maxImages - value.length;
-                          await showModalBottomSheet<void>(
-                            context: state.context,
-                            builder: (_) {
-                              return ImageSourceBottomSheet(
-                                maxHeight: maxHeight,
-                                maxWidth: maxWidth,
-                                preventPop: preventPop,
-                                remainingImages: remainingImages,
-                                imageQuality: imageQuality,
-                                preferredCameraDevice: preferredCameraDevice,
-                                bottomSheetPadding: bottomSheetPadding,
-                                cameraIcon: cameraIcon,
-                                cameraLabel: cameraLabel,
-                                galleryIcon: galleryIcon,
-                                galleryLabel: galleryLabel,
-                                onImageSelected: (image) {
-                                  state.requestFocus();
-                                  field.didChange([...value, ...image]);
-                                  Navigator.pop(state.context);
-                                },
-                              );
-                            },
-                          );
-                          // if (remainingImages == 1) {
-                          // } else {
-                          //   final imagePicker = ImagePicker();
-                          //   final picked = await imagePicker.pickMultiImage(
-                          //     maxHeight: maxHeight,
-                          //     maxWidth: maxWidth,
-                          //     imageQuality: imageQuality,
-                          //   );
-                          //   if (picked != null) {
-                          //     state.requestFocus();
-                          //     final actualPicked = remainingImages == null
-                          //         ? picked
-                          //         : picked.take(remainingImages);
-                          //     field.didChange([...value, ...actualPicked]);
-                          //   }
-                          // }
-                        },
-                      );
-                    }
+                                    .withAlpha(50),
+                              ),
+                      ),
+                  onTap: () async {
+                    final remainingImages =
+                        maxImages == null ? null : maxImages - value.length;
+                    await showModalBottomSheet<void>(
+                      context: state.context,
+                      builder: (_) {
+                        return ImageSourceBottomSheet(
+                          maxHeight: maxHeight,
+                          maxWidth: maxWidth,
+                          preventPop: preventPop,
+                          remainingImages: remainingImages,
+                          imageQuality: imageQuality,
+                          preferredCameraDevice: preferredCameraDevice,
+                          bottomSheetPadding: bottomSheetPadding,
+                          cameraIcon: cameraIcon,
+                          cameraLabel: cameraLabel,
+                          galleryIcon: galleryIcon,
+                          galleryLabel: galleryLabel,
+                          onImageSelected: (image) {
+                            state.requestFocus();
+                            field.didChange([...value, ...image]);
+                            Navigator.pop(state.context);
+                          },
+                        );
+                      },
+                    );
                   },
-                ),
-              ),
+                );
+
+            Widget itemBuilder(
+              BuildContext context,
+              dynamic item,
+              int index,
+            ) {
+              bool checkIfItemIsCustomType(dynamic e) => !(e is XFile ||
+                  e is String ||
+                  e is Uint8List ||
+                  e is ImageProvider ||
+                  e is Widget);
+
+              final itemCustomType = checkIfItemIsCustomType(item);
+              var displayItem = item;
+              if (itemCustomType && displayCustomType != null) {
+                displayItem = displayCustomType(item);
+              }
+              assert(
+                !checkIfItemIsCustomType(displayItem),
+                'Display item must be of type [Uint8List], [XFile], [String] (url), [ImageProvider] or [Widget]. '
+                'Consider using displayCustomType to handle the type: ${displayItem.runtimeType}',
+              );
+
+              final displayWidget = displayItem is Widget
+                  ? displayItem
+                  : displayItem is ImageProvider
+                      ? Image(image: displayItem, fit: fit)
+                      : displayItem is Uint8List
+                          ? Image.memory(displayItem, fit: fit)
+                          : displayItem is String
+                              ? Image.network(
+                                  displayItem,
+                                  fit: fit,
+                                )
+                              : XFileImage(
+                                  file: displayItem,
+                                  fit: fit,
+                                  loadingWidget: loadingWidget,
+                                );
+              return Stack(
+                key: ObjectKey(item),
+                children: <Widget>[
+                  transformImageWidget?.call(context, displayWidget) ??
+                      displayWidget,
+                  if (state.enabled)
+                    PositionedDirectional(
+                      top: 0,
+                      end: 0,
+                      child: InkWell(
+                        onTap: () {
+                          state.requestFocus();
+                          field.didChange(
+                            value.toList()..removeAt(index),
+                          );
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(.7),
+                            shape: BoxShape.circle,
+                          ),
+                          alignment: Alignment.center,
+                          height: 22,
+                          width: 22,
+                          child: const Icon(
+                            Icons.close,
+                            size: 18,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            }
+
+            final _child = SizedBox(
+              height: previewHeight,
+              child: itemCount == 0
+                  ? null //empty list
+                  : itemCount == 1 //has a single item,
+                      ? canUpload
+                          ? addButtonBuilder(state.context) //upload button
+                          : SizedBox(
+                              width: previewAutoSizeWidth ? null : previewWidth,
+                              child: itemBuilder(state.context, value.first, 0),
+                            )
+                      : ListView.builder(
+                          itemExtent:
+                              previewAutoSizeWidth ? null : previewWidth,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: itemCount,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              margin: previewMargin,
+                              child: Builder(
+                                builder: (context) {
+                                  if (index < value.length) {
+                                    final item = value[index];
+                                    return itemBuilder(context, item, index);
+                                  } else {
+                                    return addButtonBuilder(context);
+                                  }
+                                },
+                              ),
+                            );
+                          },
+                        ),
             );
+            return showDecoration
+                ? InputDecorator(
+                    decoration: state.decoration,
+                    child: _child,
+                  )
+                : _child;
           },
         );
 

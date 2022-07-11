@@ -48,41 +48,103 @@ class MyHomePage extends StatelessWidget {
         child: Center(
           child: FormBuilder(
             key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                FormBuilderImagePicker(
-                  name: 'photos',
-                  displayCustomType: (obj) =>
-                      obj is ApiImage ? obj.imageUrl : obj,
-                  decoration: const InputDecoration(labelText: 'Pick Photos'),
-                  maxImages: 5,
-                  initialValue: [
-                    'https://images.pexels.com/photos/7078045/pexels-photo-7078045.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-                    const Text('this is an image\nas a widget !'),
-                    ApiImage(
-                      id: 'whatever',
-                      imageUrl:
-                          'https://images.pexels.com/photos/8311418/pexels-photo-8311418.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260',
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  FormBuilderImagePicker(
+                    name: 'photos',
+                    displayCustomType: (obj) =>
+                        obj is ApiImage ? obj.imageUrl : obj,
+                    decoration: const InputDecoration(labelText: 'Pick Photos'),
+                    maxImages: 5,
+                    previewAutoSizeWidth: true,
+                    previewMargin: const EdgeInsetsDirectional.only(end: 8),
+                    fit: BoxFit.cover,
+                    initialValue: [
+                      'https://images.pexels.com/photos/7078045/pexels-photo-7078045.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+                      const Text('this is an image\nas a widget !'),
+                      ApiImage(
+                        id: 'whatever',
+                        imageUrl:
+                            'https://images.pexels.com/photos/8311418/pexels-photo-8311418.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260',
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+                  FormBuilderImagePicker(
+                    name: 'singlePhotoWithDecoration',
+                    displayCustomType: (obj) =>
+                        obj is ApiImage ? obj.imageUrl : obj,
+                    decoration: const InputDecoration(
+                      labelText: 'Pick Single Photo With Decoration Visible',
                     ),
-                  ],
-                ),
-                const SizedBox(height: 15),
-                ElevatedButton(
-                  child: const Text('Submit'),
-                  onPressed: () {
-                    if (_formKey.currentState?.saveAndValidate() == true) {
-                      debugPrint(_formKey.currentState!.value.toString());
-                    }
-                  },
-                ),
-                ElevatedButton(
-                  child: const Text('Reset'),
-                  onPressed: () {
-                    _formKey.currentState?.reset();
-                  },
-                )
-              ],
+                    showDecoration: true,
+                    maxImages: 1,
+                    previewAutoSizeWidth: true,
+                    initialValue: const [
+                      'https://images.pexels.com/photos/7078045/pexels-photo-7078045.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+                  const Text(
+                      'Single Photo with no decoration, and previewAutoSizeWidth=true'),
+                  FormBuilderImagePicker(
+                    name: 'singlePhoto',
+                    displayCustomType: (obj) =>
+                        obj is ApiImage ? obj.imageUrl : obj,
+                    // decoration: const InputDecoration(
+                    //   labelText: 'Pick Photos',
+                    // ),
+                    showDecoration: false,
+                    maxImages: 1,
+                    previewAutoSizeWidth: true,
+                    initialValue: const [
+                      'https://images.pexels.com/photos/7078045/pexels-photo-7078045.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+                  const Text(
+                    'Single Photo similar to CircleAvatar, using transformImageWidget',
+                  ),
+                  FormBuilderImagePicker(
+                    name: 'singleAvatarPhoto',
+                    displayCustomType: (obj) =>
+                        obj is ApiImage ? obj.imageUrl : obj,
+                    decoration: const InputDecoration(
+                      labelText: 'Pick Photos',
+                    ),
+                    transformImageWidget: (context, displayImage) => Card(
+                      shape: const CircleBorder(),
+                      clipBehavior: Clip.antiAlias,
+                      child: SizedBox.expand(
+                        child: displayImage,
+                      ),
+                    ),
+                    showDecoration: false,
+                    maxImages: 1,
+                    previewAutoSizeWidth: false,
+                    initialValue: const [
+                      'https://images.pexels.com/photos/7078045/pexels-photo-7078045.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+                  ElevatedButton(
+                    child: const Text('Submit'),
+                    onPressed: () {
+                      if (_formKey.currentState?.saveAndValidate() == true) {
+                        debugPrint(_formKey.currentState!.value.toString());
+                      }
+                    },
+                  ),
+                  ElevatedButton(
+                    child: const Text('Reset'),
+                    onPressed: () {
+                      _formKey.currentState?.reset();
+                    },
+                  )
+                ],
+              ),
             ),
           ),
         ),

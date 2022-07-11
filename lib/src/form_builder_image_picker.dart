@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:async/async.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:image_picker/image_picker.dart';
@@ -244,22 +243,6 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
                               );
                             },
                           );
-                          // if (remainingImages == 1) {
-                          // } else {
-                          //   final imagePicker = ImagePicker();
-                          //   final picked = await imagePicker.pickMultiImage(
-                          //     maxHeight: maxHeight,
-                          //     maxWidth: maxWidth,
-                          //     imageQuality: imageQuality,
-                          //   );
-                          //   if (picked != null) {
-                          //     state.requestFocus();
-                          //     final actualPicked = remainingImages == null
-                          //         ? picked
-                          //         : picked.take(remainingImages);
-                          //     field.didChange([...value, ...actualPicked]);
-                          //   }
-                          // }
                         },
                       );
                     }

@@ -40,4 +40,4 @@ jobs:
           cd example
           flutter build appbundle --debug
           flutter build ios --debug --no-codesign
-          flutter build web --debug
+          flutter build web

@@ -1,6 +1,6 @@
-# form_builder_image_picker
+# Form Builder Image Picker
 
-Field for picking image(s) from Gallery or Camera for flutter_form_builder  package
+Field for picking image(s) from Gallery or Camera for flutter_form_builder package
 
 ## Usage
 ```dart
@@ -23,3 +23,11 @@ FormBuilder(
   ),
 ),
 ```
+
+## Credits
+
+<a href="https://github.com/flutter-form-builder-ecosystem/form_builder_image_picker/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=flutter-form-builder-ecosystem/form_builder_image_picker" />
+</a>
+
+Made with [contrib.rocks](https://contrib.rocks).

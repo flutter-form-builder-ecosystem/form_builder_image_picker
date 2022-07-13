@@ -48,10 +48,10 @@ class ImageSourceBottomSheet extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ImageSourceBottomSheetState createState() => _ImageSourceBottomSheetState();
+  ImageSourceBottomSheetState createState() => ImageSourceBottomSheetState();
 }
 
-class _ImageSourceBottomSheetState extends State<ImageSourceBottomSheet> {
+class ImageSourceBottomSheetState extends State<ImageSourceBottomSheet> {
   bool _isPickingImage = false;
 
   Future<void> _onPickImage(ImageSource source) async {

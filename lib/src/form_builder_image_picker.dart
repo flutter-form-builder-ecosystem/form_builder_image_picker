@@ -141,7 +141,7 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
           decoration: decoration,
           focusNode: focusNode,
           builder: (FormFieldState<List<dynamic>?> field) {
-            final state = field as _FormBuilderImagePickerState;
+            final state = field as FormBuilderImagePickerState;
             final theme = Theme.of(state.context);
             final disabledColor = theme.disabledColor;
             final primaryColor = theme.primaryColor;
@@ -164,16 +164,16 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
                                 image: placeholderImage,
                               )
                             : Container(
+                                color: (state.enabled
+                                        ? iconColor ?? primaryColor
+                                        : disabledColor)
+                                    .withAlpha(50),
                                 child: Icon(
                                   Icons.camera_enhance,
                                   color: state.enabled
                                       ? iconColor ?? primaryColor
                                       : disabledColor,
                                 ),
-                                color: (state.enabled
-                                        ? iconColor ?? primaryColor
-                                        : disabledColor)
-                                    .withAlpha(50),
                               ),
                       ),
                   onTap: () async {
@@ -280,7 +280,7 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
               );
             }
 
-            final _child = SizedBox(
+            final child = SizedBox(
               height: previewHeight,
               child: itemCount == 0
                   ? null //empty list
@@ -316,17 +316,17 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
             return showDecoration
                 ? InputDecorator(
                     decoration: state.decoration,
-                    child: _child,
+                    child: child,
                   )
-                : _child;
+                : child;
           },
         );
 
   @override
-  _FormBuilderImagePickerState createState() => _FormBuilderImagePickerState();
+  FormBuilderImagePickerState createState() => FormBuilderImagePickerState();
 }
 
-class _FormBuilderImagePickerState
+class FormBuilderImagePickerState
     extends FormBuilderFieldState<FormBuilderImagePicker, List<dynamic>> {
   List<dynamic> get effectiveValue =>
       value?.where((element) => element != null).toList() ?? [];

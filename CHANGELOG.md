@@ -1,3 +1,8 @@
+## [3.0.0] - 13-Jul-2021
+
+* Support flutter 3
+* Improve documentation and displaying images #20(Thanks @ahmednfwela)
+
 ## [2.0.0] - 07-Nov-2021
 * Support for `flutter_form_builder` 7.*
 * Use XFile instead of the old picker

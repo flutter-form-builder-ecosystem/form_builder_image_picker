@@ -1,3 +1,8 @@
+## [3.1.0] - 28-Jul-2022
+
+* Apply license BSD-3-clause
+* Refactor readme
+
 ## [3.0.0] - 13-Jul-2021
 
 * Support flutter 3

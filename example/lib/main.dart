@@ -129,6 +129,15 @@ class MyHomePage extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 15),
+                  FormBuilderImagePicker(
+                    name: 'fieldCustomization',
+                    decoration: const InputDecoration(labelText: 'Pick Photos'),
+                    previewAutoSizeWidth: true,
+                    fit: BoxFit.cover,
+                    backgroundColor: Colors.black54,
+                    iconColor: Colors.white,
+                    icon: Icons.ac_unit_rounded,
+                  ),
                   ElevatedButton(
                     child: const Text('Submit'),
                     onPressed: () {

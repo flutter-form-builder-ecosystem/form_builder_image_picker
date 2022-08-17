@@ -42,7 +42,14 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
   /// placeholder widget displayed when picking a new image
   final Widget? placeholderWidget;
 
+  /// Field icon
+  final IconData? icon;
+
+  /// Field icon color
   final Color? iconColor;
+
+  /// Field background color
+  final Color? backgroundColor;
 
   /// Optional maximum height of image; see [ImagePicker].
   final double? maxHeight;
@@ -113,7 +120,9 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
     this.previewWidth = 130,
     this.previewHeight = 130,
     this.previewMargin,
+    this.icon,
     this.iconColor,
+    this.backgroundColor,
     this.maxHeight,
     this.maxWidth,
     this.imageQuality,
@@ -165,11 +174,11 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
                               )
                             : Container(
                                 color: (state.enabled
-                                        ? iconColor ?? primaryColor
-                                        : disabledColor)
-                                    .withAlpha(50),
+                                    ? backgroundColor ??
+                                        primaryColor.withAlpha(50)
+                                    : disabledColor),
                                 child: Icon(
-                                  Icons.camera_enhance,
+                                  icon ?? Icons.camera_enhance,
                                   color: state.enabled
                                       ? iconColor ?? primaryColor
                                       : disabledColor,

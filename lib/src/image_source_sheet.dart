@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'image_source_option.dart';
+
 class ImageSourceBottomSheet extends StatefulWidget {
   /// Optional maximum height of image
   final double? maxHeight;
@@ -24,6 +26,10 @@ class ImageSourceBottomSheet extends StatefulWidget {
   /// Callback when an image is selected.
   final void Function(Iterable<XFile> files) onImageSelected;
 
+  /// The sources to create ListTiles for.
+  /// Either [ImageSourceOption.gallery], [ImageSourceOption.camera] or both.
+  final List<ImageSourceOption> availableImageSources;
+
   final Widget? cameraIcon;
   final Widget? galleryIcon;
   final Widget? cameraLabel;
@@ -45,6 +51,7 @@ class ImageSourceBottomSheet extends StatefulWidget {
     this.cameraLabel,
     this.galleryLabel,
     this.bottomSheetPadding,
+    required this.availableImageSources,
   }) : super(key: key);
 
   @override
@@ -94,16 +101,18 @@ class ImageSourceBottomSheetState extends State<ImageSourceBottomSheet> {
       padding: widget.bottomSheetPadding,
       child: Wrap(
         children: <Widget>[
-          ListTile(
-            leading: widget.cameraIcon,
-            title: widget.cameraLabel,
-            onTap: () => _onPickImage(ImageSource.camera),
-          ),
-          ListTile(
-            leading: widget.galleryIcon,
-            title: widget.galleryLabel,
-            onTap: () => _onPickImage(ImageSource.gallery),
-          ),
+          if (widget.availableImageSources.contains(ImageSourceOption.camera))
+            ListTile(
+              leading: widget.cameraIcon,
+              title: widget.cameraLabel,
+              onTap: () => _onPickImage(ImageSource.camera),
+            ),
+          if (widget.availableImageSources.contains(ImageSourceOption.gallery))
+            ListTile(
+              leading: widget.galleryIcon,
+              title: widget.galleryLabel,
+              onTap: () => _onPickImage(ImageSource.gallery),
+            ),
         ],
       ),
     );

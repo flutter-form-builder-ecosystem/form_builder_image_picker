@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
 class ApiImage {
   final String imageUrl;
   final String id;
+
   ApiImage({
     required this.imageUrl,
     required this.id,
@@ -137,6 +138,20 @@ class MyHomePage extends StatelessWidget {
                     backgroundColor: Colors.black54,
                     iconColor: Colors.white,
                     icon: Icons.ac_unit_rounded,
+                  ),
+                  const SizedBox(height: 15),
+                  FormBuilderImagePicker(
+                    name: 'onlyCamera',
+                    decoration: const InputDecoration(
+                        labelText: 'Pick Photos (only from camera)'),
+                    availableImageSources: const [ImageSourceOption.camera],
+                  ),
+                  const SizedBox(height: 15),
+                  FormBuilderImagePicker(
+                    name: 'onlyGallery',
+                    decoration: const InputDecoration(
+                        labelText: 'Pick Photos (only from gallery)'),
+                    availableImageSources: const [ImageSourceOption.gallery],
                   ),
                   ElevatedButton(
                     child: const Text('Submit'),

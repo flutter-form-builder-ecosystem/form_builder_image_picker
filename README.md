@@ -14,7 +14,6 @@ ___
 - [Use](#use)
     - [Setup](#setup)
     - [Basic use](#basic-use)
-    - [Especific uses](#especific-uses)
 - [Support](#support)
     - [Contribute](#contribute)
     - [Questions and answers](#questions-and-answers)

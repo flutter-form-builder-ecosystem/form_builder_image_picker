@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'image_source_option.dart';
 import 'image_source_sheet.dart';
 
 /// Field for picking image(s) from Gallery or Camera.
@@ -95,6 +96,10 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
   /// fit for each image
   final BoxFit fit;
 
+  /// The sources available to pick from.
+  /// Either [ImageSourceOption.gallery], [ImageSourceOption.camera] or both.
+  final List<ImageSourceOption> availableImageSources;
+
   FormBuilderImagePicker({
     Key? key,
     //From Super
@@ -135,6 +140,10 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
     this.galleryLabel = const Text('Gallery'),
     this.bottomSheetPadding = EdgeInsets.zero,
     this.placeholderImage,
+    this.availableImageSources = const [
+      ImageSourceOption.camera,
+      ImageSourceOption.gallery,
+    ],
   })  : assert(maxImages == null || maxImages >= 0),
         super(
           key: key,
@@ -203,6 +212,7 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
                           cameraLabel: cameraLabel,
                           galleryIcon: galleryIcon,
                           galleryLabel: galleryLabel,
+                          availableImageSources: availableImageSources,
                           onImageSelected: (image) {
                             state.requestFocus();
                             field.didChange([...value, ...image]);

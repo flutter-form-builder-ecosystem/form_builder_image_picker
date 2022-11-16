@@ -52,6 +52,21 @@ FormBuilder(
 ),
 ```
 
+### Only specific pickers
+```dart
+FormBuilder(
+  child: Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: <Widget>[
+      FormBuilderImagePicker(
+        name: 'noCamera',
+        availableImageSources: const [ImageSourceOption.gallery],
+      ),
+    ],
+  ),
+),
+```
+
 See [pub.dev example tab](https://pub.dev/packages/form_builder_image_picker/example) or [github code](example/lib/main.dart) for more details
 
 ## Support

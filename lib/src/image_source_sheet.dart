@@ -3,6 +3,8 @@ import 'package:image_picker/image_picker.dart';
 
 import 'image_source_option.dart';
 
+typedef FutureVoidCallBack = Future<void> Function();
+
 class ImageSourceBottomSheet extends StatefulWidget {
   /// Optional maximum height of image
   final double? maxHeight;
@@ -37,6 +39,10 @@ class ImageSourceBottomSheet extends StatefulWidget {
   final EdgeInsets? bottomSheetPadding;
   final bool preventPop;
 
+  final Widget Function(
+          FutureVoidCallBack cameraPicker, FutureVoidCallBack galleryPicker)?
+      optionsBuilder;
+
   const ImageSourceBottomSheet({
     Key? key,
     this.remainingImages,
@@ -51,6 +57,7 @@ class ImageSourceBottomSheet extends StatefulWidget {
     this.cameraLabel,
     this.galleryLabel,
     this.bottomSheetPadding,
+    this.optionsBuilder,
     required this.availableImageSources,
   }) : super(key: key);
 
@@ -97,6 +104,12 @@ class ImageSourceBottomSheetState extends State<ImageSourceBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.optionsBuilder != null) {
+      return widget.optionsBuilder!(
+        () => _onPickImage(ImageSource.camera),
+        () => _onPickImage(ImageSource.gallery),
+      );
+    }
     Widget res = Container(
       padding: widget.bottomSheetPadding,
       child: Wrap(

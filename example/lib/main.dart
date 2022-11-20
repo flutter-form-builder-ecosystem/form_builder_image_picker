@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
@@ -152,6 +153,36 @@ class MyHomePage extends StatelessWidget {
                     decoration: const InputDecoration(
                         labelText: 'Pick Photos (only from gallery)'),
                     availableImageSources: const [ImageSourceOption.gallery],
+                  ),
+                  FormBuilderImagePicker(
+                    decoration: const InputDecoration(
+                        labelText: 'Pick Photos (with custom view)'),
+                    name: "CupertinoActionSheet",
+                    optionsBuilder: (cameraPicker, galleryPicker) =>
+                        CupertinoActionSheet(
+                      title: const Text('Image'),
+                      message: const Text('Pick an image from given options'),
+                      actions: [
+                        CupertinoActionSheetAction(
+                          isDefaultAction: true,
+                          onPressed: () {
+                            cameraPicker();
+                          },
+                          child: const Text('Camera'),
+                        ),
+                        CupertinoActionSheetAction(
+                          isDefaultAction: true,
+                          onPressed: () {
+                            galleryPicker();
+                          },
+                          child: const Text('Gallery'),
+                        )
+                      ],
+                    ),
+                    onTap: (child) => showCupertinoModalPopup(
+                      context: context,
+                      builder: (context) => child,
+                    ),
                   ),
                   ElevatedButton(
                     child: const Text('Submit'),

@@ -100,6 +100,18 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
   /// Either [ImageSourceOption.gallery], [ImageSourceOption.camera] or both.
   final List<ImageSourceOption> availableImageSources;
 
+  ///A callback that returns a  pickup options
+  ///ListTile(inside Wrap) by Default
+  ///use optionsBuilder to return a widget of your choice
+  final ValueChanged<ImageSourceBottomSheet>? onTap;
+
+  /// use this callback if you want custom view for options
+  /// call cameraPicker() to picks image from camera
+  /// call galleryPicker() to picks image from gallery
+  final Widget Function(
+          FutureVoidCallBack cameraPicker, FutureVoidCallBack galleryPicker)?
+      optionsBuilder;
+
   FormBuilderImagePicker({
     Key? key,
     //From Super
@@ -140,6 +152,8 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
     this.galleryLabel = const Text('Gallery'),
     this.bottomSheetPadding = EdgeInsets.zero,
     this.placeholderImage,
+    this.onTap,
+    this.optionsBuilder,
     this.availableImageSources = const [
       ImageSourceOption.camera,
       ImageSourceOption.gallery,
@@ -197,30 +211,35 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
                   onTap: () async {
                     final remainingImages =
                         maxImages == null ? null : maxImages - value.length;
-                    await showModalBottomSheet<void>(
-                      context: state.context,
-                      builder: (_) {
-                        return ImageSourceBottomSheet(
-                          maxHeight: maxHeight,
-                          maxWidth: maxWidth,
-                          preventPop: preventPop,
-                          remainingImages: remainingImages,
-                          imageQuality: imageQuality,
-                          preferredCameraDevice: preferredCameraDevice,
-                          bottomSheetPadding: bottomSheetPadding,
-                          cameraIcon: cameraIcon,
-                          cameraLabel: cameraLabel,
-                          galleryIcon: galleryIcon,
-                          galleryLabel: galleryLabel,
-                          availableImageSources: availableImageSources,
-                          onImageSelected: (image) {
-                            state.requestFocus();
-                            field.didChange([...value, ...image]);
-                            Navigator.pop(state.context);
-                          },
-                        );
+
+                    final imageSourceSheet = ImageSourceBottomSheet(
+                      maxHeight: maxHeight,
+                      maxWidth: maxWidth,
+                      preventPop: preventPop,
+                      remainingImages: remainingImages,
+                      imageQuality: imageQuality,
+                      preferredCameraDevice: preferredCameraDevice,
+                      bottomSheetPadding: bottomSheetPadding,
+                      cameraIcon: cameraIcon,
+                      cameraLabel: cameraLabel,
+                      galleryIcon: galleryIcon,
+                      galleryLabel: galleryLabel,
+                      optionsBuilder: optionsBuilder,
+                      availableImageSources: availableImageSources,
+                      onImageSelected: (image) {
+                        state.requestFocus();
+                        field.didChange([...value, ...image]);
+                        Navigator.pop(state.context);
                       },
                     );
+                    onTap != null
+                        ? onTap(imageSourceSheet)
+                        : await showModalBottomSheet<void>(
+                            context: state.context,
+                            builder: (_) {
+                              return imageSourceSheet;
+                            },
+                          );
                   },
                 );
 

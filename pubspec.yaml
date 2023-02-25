@@ -3,6 +3,8 @@ description: Images picker field for FlutterFormBuilder. Get images from gallery
 version: 3.1.0
 repository: https://github.com/flutter-form-builder-ecosystem/form_builder_image_picker
 issue_tracker: https://github.com/flutter-form-builder-ecosystem/form_builder_image_picker/issues
+funding: 
+  - https://opencollective.com/flutter-form-builder-ecosystem
 
 environment:
   sdk: '>=2.12.0 <3.0.0'

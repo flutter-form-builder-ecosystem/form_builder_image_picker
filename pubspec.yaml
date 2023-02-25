@@ -7,15 +7,15 @@ funding:
   - https://opencollective.com/flutter-form-builder-ecosystem
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
-  flutter: ">=3.0.0"
+  sdk: '>=2.19.0 <3.0.0'
+  flutter: ">=3.7.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  flutter_form_builder: ^7.3.1
-  async: ^2.9.0
-  image_picker: ^0.8.5+3
+  flutter_form_builder: ^7.8.0
+  async: ^2.10.0
+  image_picker: ^0.8.6+3
 
 dev_dependencies:
   flutter_lints: ^2.0.1

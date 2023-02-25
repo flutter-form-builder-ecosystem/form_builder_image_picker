@@ -92,7 +92,7 @@ class ImageSourceBottomSheetState extends State<ImageSourceBottomSheet> {
           imageQuality: widget.imageQuality,
         );
         _isPickingImage = false;
-        if (pickedFiles != null && pickedFiles.isNotEmpty) {
+        if (pickedFiles.isNotEmpty) {
           widget.onImageSelected(pickedFiles);
         }
       }

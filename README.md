@@ -14,7 +14,6 @@ ___
 - [Use](#use)
     - [Setup](#setup)
     - [Basic use](#basic-use)
-    - [Especific uses](#especific-uses)
 - [Support](#support)
     - [Contribute](#contribute)
     - [Questions and answers](#questions-and-answers)
@@ -36,7 +35,7 @@ ___
 
 Since this package makes use of [image_picker](https://pub.dev/packages/image_picker) package, for platform specific setup, follow the instructions [here](https://github.com/flutter/plugins/tree/main/packages/image_picker/image_picker#installation)
 
-### Basuc use
+### Basic use
 
 ```dart
 FormBuilder(
@@ -53,7 +52,22 @@ FormBuilder(
 ),
 ```
 
-See [pud.dev example tab](https://pub.dev/packages/form_builder_image_picker/example) or [github code](example/lib/main.dart) for more details
+### Only specific pickers
+```dart
+FormBuilder(
+  child: Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: <Widget>[
+      FormBuilderImagePicker(
+        name: 'noCamera',
+        availableImageSources: const [ImageSourceOption.gallery],
+      ),
+    ],
+  ),
+),
+```
+
+See [pub.dev example tab](https://pub.dev/packages/form_builder_image_picker/example) or [github code](example/lib/main.dart) for more details
 
 ## Support
 

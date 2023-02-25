@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'image_source_option.dart';
 import 'image_source_sheet.dart';
 
 /// Field for picking image(s) from Gallery or Camera.
@@ -95,6 +96,22 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
   /// fit for each image
   final BoxFit fit;
 
+  /// The sources available to pick from.
+  /// Either [ImageSourceOption.gallery], [ImageSourceOption.camera] or both.
+  final List<ImageSourceOption> availableImageSources;
+
+  ///A callback that returns a  pickup options
+  ///ListTile(inside Wrap) by Default
+  ///use optionsBuilder to return a widget of your choice
+  final ValueChanged<ImageSourceBottomSheet>? onTap;
+
+  /// use this callback if you want custom view for options
+  /// call cameraPicker() to picks image from camera
+  /// call galleryPicker() to picks image from gallery
+  final Widget Function(
+          FutureVoidCallBack cameraPicker, FutureVoidCallBack galleryPicker)?
+      optionsBuilder;
+
   FormBuilderImagePicker({
     Key? key,
     //From Super
@@ -135,6 +152,12 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
     this.galleryLabel = const Text('Gallery'),
     this.bottomSheetPadding = EdgeInsets.zero,
     this.placeholderImage,
+    this.onTap,
+    this.optionsBuilder,
+    this.availableImageSources = const [
+      ImageSourceOption.camera,
+      ImageSourceOption.gallery,
+    ],
   })  : assert(maxImages == null || maxImages >= 0),
         super(
           key: key,
@@ -188,29 +211,35 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
                   onTap: () async {
                     final remainingImages =
                         maxImages == null ? null : maxImages - value.length;
-                    await showModalBottomSheet<void>(
-                      context: state.context,
-                      builder: (_) {
-                        return ImageSourceBottomSheet(
-                          maxHeight: maxHeight,
-                          maxWidth: maxWidth,
-                          preventPop: preventPop,
-                          remainingImages: remainingImages,
-                          imageQuality: imageQuality,
-                          preferredCameraDevice: preferredCameraDevice,
-                          bottomSheetPadding: bottomSheetPadding,
-                          cameraIcon: cameraIcon,
-                          cameraLabel: cameraLabel,
-                          galleryIcon: galleryIcon,
-                          galleryLabel: galleryLabel,
-                          onImageSelected: (image) {
-                            state.requestFocus();
-                            field.didChange([...value, ...image]);
-                            Navigator.pop(state.context);
-                          },
-                        );
+
+                    final imageSourceSheet = ImageSourceBottomSheet(
+                      maxHeight: maxHeight,
+                      maxWidth: maxWidth,
+                      preventPop: preventPop,
+                      remainingImages: remainingImages,
+                      imageQuality: imageQuality,
+                      preferredCameraDevice: preferredCameraDevice,
+                      bottomSheetPadding: bottomSheetPadding,
+                      cameraIcon: cameraIcon,
+                      cameraLabel: cameraLabel,
+                      galleryIcon: galleryIcon,
+                      galleryLabel: galleryLabel,
+                      optionsBuilder: optionsBuilder,
+                      availableImageSources: availableImageSources,
+                      onImageSelected: (image) {
+                        state.requestFocus();
+                        field.didChange([...value, ...image]);
+                        Navigator.pop(state.context);
                       },
                     );
+                    onTap != null
+                        ? onTap(imageSourceSheet)
+                        : await showModalBottomSheet<void>(
+                            context: state.context,
+                            builder: (_) {
+                              return imageSourceSheet;
+                            },
+                          );
                   },
                 );
 

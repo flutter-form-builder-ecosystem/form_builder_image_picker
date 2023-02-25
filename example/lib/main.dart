@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
 class ApiImage {
   final String imageUrl;
   final String id;
+
   ApiImage({
     required this.imageUrl,
     required this.id,
@@ -137,6 +139,50 @@ class MyHomePage extends StatelessWidget {
                     backgroundColor: Colors.black54,
                     iconColor: Colors.white,
                     icon: Icons.ac_unit_rounded,
+                  ),
+                  const SizedBox(height: 15),
+                  FormBuilderImagePicker(
+                    name: 'onlyCamera',
+                    decoration: const InputDecoration(
+                        labelText: 'Pick Photos (only from camera)'),
+                    availableImageSources: const [ImageSourceOption.camera],
+                  ),
+                  const SizedBox(height: 15),
+                  FormBuilderImagePicker(
+                    name: 'onlyGallery',
+                    decoration: const InputDecoration(
+                        labelText: 'Pick Photos (only from gallery)'),
+                    availableImageSources: const [ImageSourceOption.gallery],
+                  ),
+                  FormBuilderImagePicker(
+                    decoration: const InputDecoration(
+                        labelText: 'Pick Photos (with custom view)'),
+                    name: "CupertinoActionSheet",
+                    optionsBuilder: (cameraPicker, galleryPicker) =>
+                        CupertinoActionSheet(
+                      title: const Text('Image'),
+                      message: const Text('Pick an image from given options'),
+                      actions: [
+                        CupertinoActionSheetAction(
+                          isDefaultAction: true,
+                          onPressed: () {
+                            cameraPicker();
+                          },
+                          child: const Text('Camera'),
+                        ),
+                        CupertinoActionSheetAction(
+                          isDefaultAction: true,
+                          onPressed: () {
+                            galleryPicker();
+                          },
+                          child: const Text('Gallery'),
+                        )
+                      ],
+                    ),
+                    onTap: (child) => showCupertinoModalPopup(
+                      context: context,
+                      builder: (context) => child,
+                    ),
                   ),
                   ElevatedButton(
                     child: const Text('Submit'),

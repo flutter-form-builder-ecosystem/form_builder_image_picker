@@ -227,7 +227,7 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
                       optionsBuilder: optionsBuilder,
                       availableImageSources: availableImageSources,
                       onImageSelected: (image) {
-                        state.requestFocus();
+                        state.focus();
                         field.didChange([...value, ...image]);
                         Navigator.pop(state.context);
                       },
@@ -292,7 +292,7 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
                       end: 0,
                       child: InkWell(
                         onTap: () {
-                          state.requestFocus();
+                          state.focus();
                           field.didChange(
                             value.toList()..removeAt(index),
                           );

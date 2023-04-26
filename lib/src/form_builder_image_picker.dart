@@ -112,21 +112,22 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
           FutureVoidCallBack cameraPicker, FutureVoidCallBack galleryPicker)?
       optionsBuilder;
 
+  final WidgetBuilder? loadingWidget;
+
   FormBuilderImagePicker({
-    Key? key,
-    //From Super
-    required String name,
-    FormFieldValidator<List<dynamic>>? validator,
-    List<dynamic>? initialValue,
-    InputDecoration decoration = const InputDecoration(),
-    ValueChanged<List<dynamic>?>? onChanged,
-    ValueTransformer<List<dynamic>?>? valueTransformer,
-    bool enabled = true,
-    FormFieldSetter<List<dynamic>>? onSaved,
-    AutovalidateMode autovalidateMode = AutovalidateMode.disabled,
-    VoidCallback? onReset,
-    FocusNode? focusNode,
-    WidgetBuilder? loadingWidget,
+    super.key,
+    required super.name,
+    super.validator,
+    super.initialValue,
+    super.decoration = const InputDecoration(),
+    super.onChanged,
+    super.valueTransformer,
+    super.enabled = true,
+    super.onSaved,
+    super.autovalidateMode = AutovalidateMode.disabled,
+    super.onReset,
+    super.focusNode,
+    this.loadingWidget,
     this.transformImageWidget,
     this.showDecoration = true,
     this.placeholderWidget,
@@ -160,18 +161,6 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
     ],
   })  : assert(maxImages == null || maxImages >= 0),
         super(
-          key: key,
-          initialValue: initialValue,
-          name: name,
-          validator: validator,
-          valueTransformer: valueTransformer,
-          onChanged: onChanged,
-          autovalidateMode: autovalidateMode,
-          onSaved: onSaved,
-          enabled: enabled,
-          onReset: onReset,
-          decoration: decoration,
-          focusNode: focusNode,
           builder: (FormFieldState<List<dynamic>?> field) {
             final state = field as FormBuilderImagePickerState;
             final theme = Theme.of(state.context);

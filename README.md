@@ -8,20 +8,19 @@ Images picker field for FlutterFormBuilder. Get images from gallery or camera.
 [![Codecov](https://img.shields.io/codecov/c/github/flutter-form-builder-ecosystem/form_builder_image_picker?logo=codecov&style=for-the-badge)](https://codecov.io/gh/flutter-form-builder-ecosystem/form_builder_image_picker/)
 ___
 
-- [Form Builder Image Picker](#form-builder-image-picker)
-  - [Features](#features)
-  - [Use](#use)
-    - [Setup](#setup)
-    - [Basic use](#basic-use)
-    - [Only specific pickers](#only-specific-pickers)
-  - [Support](#support)
-    - [Contribute](#contribute)
-    - [Questions and answers](#questions-and-answers)
-    - [Donations](#donations)
-  - [Roadmap](#roadmap)
-  - [Ecosystem](#ecosystem)
-  - [Thanks to](#thanks-to)
-    - [Contributors](#contributors)
+- [Features](#features)
+- [Use](#use)
+  - [Setup](#setup)
+  - [Basic use](#basic-use)
+  - [Only specific pickers](#only-specific-pickers)
+- [Support](#support)
+  - [Contribute](#contribute)
+  - [Questions and answers](#questions-and-answers)
+  - [Donations](#donations)
+- [Roadmap](#roadmap)
+- [Ecosystem](#ecosystem)
+- [Thanks to](#thanks-to)
+  - [Contributors](#contributors)
 
 ## Features
 

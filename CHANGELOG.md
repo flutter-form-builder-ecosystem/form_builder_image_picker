@@ -1,3 +1,8 @@
+## [4.0.0-dev.1]
+
+* Update constraints to Flutter 3.10
+* Update flutter_form_builder to 9.0.0-dev.2
+
 ## [3.2.0]
 
 * **NEW** Allow only camera or gallery. Details on [readme](https://github.com/flutter-form-builder-ecosystem/form_builder_image_picker#only-specific-pickers)

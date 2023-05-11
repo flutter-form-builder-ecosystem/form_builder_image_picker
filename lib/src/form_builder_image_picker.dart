@@ -17,7 +17,7 @@ import 'image_source_sheet.dart';
 ///
 /// if you want to use a different object (e.g. a class from the backend that has imageId and imageUrl)
 /// you need to implement [displayCustomType]
-class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
+class FormBuilderImagePicker extends FormBuilderFieldDecoration<List<dynamic>> {
   /// set to true to insert an [InputDecorator] which displays labels, borders, etc...
   ///
   /// when [maxImages] == 1, it's better to set this to false
@@ -354,7 +354,7 @@ class FormBuilderImagePicker extends FormBuilderField<List<dynamic>> {
 }
 
 class FormBuilderImagePickerState
-    extends FormBuilderFieldState<FormBuilderImagePicker, List<dynamic>> {
+    extends FormBuilderFieldDecorationState<FormBuilderImagePicker, List<dynamic>> {
   List<dynamic> get effectiveValue =>
       value?.where((element) => element != null).toList() ?? [];
 

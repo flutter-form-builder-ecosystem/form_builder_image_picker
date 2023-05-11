@@ -31,7 +31,7 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
       - name: Format code
-        run: flutter format --dry-run --set-exit-if-changed .
+        run: dart format --set-exit-if-changed .
       - name: Analyze static code
         run: flutter analyze
       # - name: Run tests
@@ -46,7 +46,6 @@ jobs:
           flutter build web
 
       # - name: Upload coverage to Codecov
-      #   if: ${{ matrix.channel == 'stable' }}
       #   uses: codecov/codecov-action@v3
       #   with:
       #     files: coverage/lcov.info
@@ -69,13 +68,4 @@ jobs:
           channel: 'stable'
       - name: Publish package
         run: dart pub publish -v -f
-      - name: Build changelog
-        id: github_release
-        uses: mikepenz/release-changelog-builder-action@v3
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Create release
-        uses: softprops/action-gh-release@v1
-        with:
-          body: ${{steps.github_release.outputs.changelog}}
 

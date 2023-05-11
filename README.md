@@ -20,7 +20,6 @@ ___
 - [Roadmap](#roadmap)
 - [Ecosystem](#ecosystem)
 - [Thanks to](#thanks-to)
-  - [Contributors](#contributors)
 
 ## Features
 
@@ -103,10 +102,4 @@ Take a look to [our awesome ecosystem](https://github.com/flutter-form-builder-e
 
 ## Thanks to
 
-### Contributors
-
-<a href="https://github.com/flutter-form-builder-ecosystem/form_builder_image_picker/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=flutter-form-builder-ecosystem/form_builder_image_picker" />
-</a>
-
-Made with [contrib.rocks](https://contrib.rocks).
+[All constributors](https://github.com/flutter-form-builder-ecosystem/form_builder_image_picker/graphs/contributors)

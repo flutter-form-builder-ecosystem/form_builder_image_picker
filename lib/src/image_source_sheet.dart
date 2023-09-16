@@ -44,7 +44,7 @@ class ImageSourceBottomSheet extends StatefulWidget {
       optionsBuilder;
 
   const ImageSourceBottomSheet({
-    Key? key,
+    super.key,
     this.remainingImages,
     this.preventPop = false,
     this.maxHeight,
@@ -59,7 +59,7 @@ class ImageSourceBottomSheet extends StatefulWidget {
     this.bottomSheetPadding,
     this.optionsBuilder,
     required this.availableImageSources,
-  }) : super(key: key);
+  });
 
   @override
   ImageSourceBottomSheetState createState() => ImageSourceBottomSheetState();

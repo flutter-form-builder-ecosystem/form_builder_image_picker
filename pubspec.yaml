@@ -4,7 +4,7 @@ version: 4.0.0
 repository: https://github.com/flutter-form-builder-ecosystem/form_builder_image_picker
 issue_tracker: https://github.com/flutter-form-builder-ecosystem/form_builder_image_picker/issues
 homepage: https://github.com/flutter-form-builder-ecosystem
-funding: 
+funding:
   - https://opencollective.com/flutter-form-builder-ecosystem
 
 environment:
@@ -16,7 +16,15 @@ dependencies:
     sdk: flutter
   flutter_form_builder: ^9.1.1
   async: ^2.11.0
-  image_picker: '>=0.8.9 <2.0.0'
+  image_picker: ^1.0.4
 
 dev_dependencies:
   flutter_lints: ^2.0.3
+
+platforms:
+  android:
+  ios:
+  linux:
+  macos:
+  web:
+  windows:

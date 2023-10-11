@@ -1,12 +1,19 @@
 import 'dart:typed_data';
 
 import 'package:async/async.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'image_source_option.dart';
 import 'image_source_sheet.dart';
+
+typedef PreviewBuilder = Widget Function(
+  BuildContext,
+  List<Widget> children,
+  Widget? addButton,
+);
 
 /// Field for picking image(s) from Gallery or Camera.
 ///
@@ -36,6 +43,9 @@ class FormBuilderImagePicker extends FormBuilderFieldDecoration<List<dynamic>> {
 
   /// margins between image previews
   final EdgeInsetsGeometry? previewMargin;
+
+  /// May be supplied for a fully custom display of the image preview
+  final PreviewBuilder? previewBuilder;
 
   /// placeholder image displayed when picking a new image
   final ImageProvider? placeholderImage;
@@ -132,6 +142,7 @@ class FormBuilderImagePicker extends FormBuilderFieldDecoration<List<dynamic>> {
     this.showDecoration = true,
     this.placeholderWidget,
     this.previewAutoSizeWidth = true,
+    this.previewBuilder,
     this.fit = BoxFit.cover,
     this.preventPop = false,
     this.displayCustomType,
@@ -305,6 +316,20 @@ class FormBuilderImagePicker extends FormBuilderFieldDecoration<List<dynamic>> {
                     ),
                 ],
               );
+            }
+
+            if (previewBuilder != null) {
+              return Builder(builder: (context) {
+                final widgets = value
+                    .mapIndexed((i, v) => itemBuilder(context, v, i))
+                    .toList();
+
+                return previewBuilder(
+                  context,
+                  widgets,
+                  canUpload ? addButtonBuilder(context) : null,
+                );
+              });
             }
 
             final child = SizedBox(

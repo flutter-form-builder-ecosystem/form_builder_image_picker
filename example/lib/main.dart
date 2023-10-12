@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-
 import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 
 void main() {
@@ -52,6 +51,7 @@ class MyHomePage extends StatelessWidget {
             key: _formKey,
             child: SingleChildScrollView(
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   FormBuilderImagePicker(
@@ -157,7 +157,7 @@ class MyHomePage extends StatelessWidget {
                   FormBuilderImagePicker(
                     decoration: const InputDecoration(
                         labelText: 'Pick Photos (with custom view)'),
-                    name: "CupertinoActionSheet",
+                    name: 'CupertinoActionSheet',
                     optionsBuilder: (cameraPicker, galleryPicker) =>
                         CupertinoActionSheet(
                       title: const Text('Image'),
@@ -182,6 +182,23 @@ class MyHomePage extends StatelessWidget {
                     onTap: (child) => showCupertinoModalPopup(
                       context: context,
                       builder: (context) => child,
+                    ),
+                  ),
+                  FormBuilderImagePicker(
+                    name: 'customPreview',
+                    maxImages: null,
+                    previewBuilder: (context, images, addButton) =>
+                        ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        minHeight: 130,
+                        maxHeight: 500,
+                      ),
+                      child: GridView.extent(
+                        maxCrossAxisExtent: 130,
+                        mainAxisSpacing: 4,
+                        crossAxisSpacing: 4,
+                        children: [...images, if (addButton != null) addButton],
+                      ),
                     ),
                   ),
                   ElevatedButton(

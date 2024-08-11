@@ -1,19 +1,12 @@
 import 'dart:typed_data';
 
 import 'package:async/async.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'image_source_option.dart';
 import 'image_source_sheet.dart';
-
-typedef PreviewBuilder = Widget Function(
-  BuildContext,
-  List<Widget> children,
-  Widget? addButton,
-);
 
 /// Field for picking image(s) from Gallery or Camera.
 ///
@@ -45,7 +38,11 @@ class FormBuilderImagePicker extends FormBuilderFieldDecoration<List<dynamic>> {
   final EdgeInsetsGeometry? previewMargin;
 
   /// May be supplied for a fully custom display of the image preview
-  final PreviewBuilder? previewBuilder;
+  final Widget Function(
+    BuildContext,
+    List<Widget> children,
+    Widget? addButton,
+  )? previewBuilder;
 
   /// placeholder image displayed when picking a new image
   final ImageProvider? placeholderImage;
@@ -419,5 +416,13 @@ class _XFileImageState extends State<XFileImage> {
         return Image.memory(data, fit: widget.fit);
       },
     );
+  }
+}
+
+extension _ListExtension<E> on List<E> {
+  Iterable<R> mapIndexed<R>(R Function(int index, E element) convert) sync* {
+    for (var index = 0; index < length; index++) {
+      yield convert(index, this[index]);
+    }
   }
 }

@@ -8,7 +8,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
@@ -36,7 +36,7 @@ class ApiImage {
 class MyHomePage extends StatelessWidget {
   final _formKey = GlobalKey<FormBuilderState>();
 
-  MyHomePage({Key? key}) : super(key: key);
+  MyHomePage({super.key});
 
   @override
   Widget build(BuildContext context) {

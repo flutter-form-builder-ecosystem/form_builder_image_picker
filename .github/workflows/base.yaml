@@ -16,7 +16,9 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1 # Use shallow clone for faster checkout
 
       - name: Check broken links
         uses: JustinBeckwith/linkinator-action@v1
@@ -24,15 +26,24 @@ jobs:
           paths: "**/*.md"
 
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '11'
 
+      - name: Get Flutter version by FVM
+        uses: kuhnroyal/flutter-fvm-config-action@v2
+        id: fvm-config-action
+        with:
+          path: ".fvmrc"
+
       - name: Flutter action
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
+          channel: ${{ steps.fvm-config-action.outputs.FLUTTER_CHANNEL }}
+          architecture: x64
+          cache: true
 
       - name: Install dependencies
         run: flutter pub get
@@ -59,19 +70,8 @@ jobs:
       #     name: form_builder_image_picker
 
   deployment:
-    if: ${{ github.ref_type == 'tag' }}
-    needs: build
-    name: Deploy package
     permissions:
       id-token: write
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: dart-lang/setup-dart@v1
-      - name: Flutter action
-        uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-      - name: Publish package
-        run: dart pub publish -v -f
-
+    uses: flutter-form-builder-ecosystem/.github/.github/workflows/deployment.yaml@main
+    if: ${{ github.ref_type == 'tag' }}
+    needs: build

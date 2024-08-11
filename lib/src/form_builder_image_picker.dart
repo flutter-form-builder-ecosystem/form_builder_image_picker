@@ -93,9 +93,16 @@ class FormBuilderImagePicker extends FormBuilderFieldDecoration<List<dynamic>> {
   final Widget Function(BuildContext context, Widget displayImage)?
       transformImageWidget;
 
+  /// Icon for camera option on bottom sheet
   final Widget cameraIcon;
+
+  /// Icon for gallery option on bottom sheet
   final Widget galleryIcon;
+
+  /// Label for camera option on bottom sheet
   final Widget cameraLabel;
+
+  /// Label for gallery option on bottom sheet
   final Widget galleryLabel;
   final EdgeInsets bottomSheetPadding;
   final bool preventPop;

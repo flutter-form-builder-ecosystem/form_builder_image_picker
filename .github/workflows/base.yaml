@@ -11,67 +11,20 @@ on:
 
   workflow_dispatch:
 
+# This ensures that previous jobs for the PR are canceled when PR is updated
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
-    runs-on: macos-latest
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 1 # Use shallow clone for faster checkout
-
-      - name: Check broken links
-        uses: JustinBeckwith/linkinator-action@v1
-        with:
-          paths: "**/*.md"
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '11'
-
-      - name: Get Flutter version by FVM
-        uses: kuhnroyal/flutter-fvm-config-action@v2
-        id: fvm-config-action
-        with:
-          path: ".fvmrc"
-
-      - name: Flutter action
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
-          channel: ${{ steps.fvm-config-action.outputs.FLUTTER_CHANNEL }}
-          architecture: x64
-          cache: true
-
-      - name: Install dependencies
-        run: flutter pub get
-      - name: Format code
-        run: dart format --set-exit-if-changed .
-      - name: Analyze static code
-        run: flutter analyze
-      # - name: Run tests
-      #   run: flutter test
-      - name: Check publish warnings
-        run: dart pub publish --dry-run
-      - name: Build example
-        run: |
-          cd example
-          flutter build appbundle --debug
-          flutter build ios --debug --no-codesign
-          flutter build web
-
-      # - name: Upload coverage to Codecov
-      #   uses: codecov/codecov-action@v3
-      #   with:
-      #     files: coverage/lcov.info
-      #     flags: unittests
-      #     name: form_builder_image_picker
+    uses: flutter-form-builder-ecosystem/.github/.github/workflows/minimal-quality.yaml@main
+  example:
+    uses: flutter-form-builder-ecosystem/.github/.github/workflows/build-examples.yaml@main
 
   deployment:
     permissions:
       id-token: write
     uses: flutter-form-builder-ecosystem/.github/.github/workflows/deployment.yaml@main
     if: ${{ github.ref_type == 'tag' }}
-    needs: build
+    needs: [build, example]

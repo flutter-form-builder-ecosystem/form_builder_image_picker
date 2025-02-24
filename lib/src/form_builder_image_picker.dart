@@ -42,6 +42,7 @@ class FormBuilderImagePicker extends FormBuilderFieldDecoration<List<dynamic>> {
     BuildContext,
     List<Widget> children,
     Widget? addButton,
+    FormBuilderImagePickerState state,
   )? previewBuilder;
 
   /// placeholder image displayed when picking a new image
@@ -332,6 +333,7 @@ class FormBuilderImagePicker extends FormBuilderFieldDecoration<List<dynamic>> {
                   context,
                   widgets,
                   canUpload ? addButtonBuilder(context) : null,
+                  state,
                 );
               });
             }

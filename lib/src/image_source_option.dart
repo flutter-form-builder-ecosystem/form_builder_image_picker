@@ -6,5 +6,5 @@ enum ImageSourceOption {
 
   /// From the gallery (or local files on the web)
   /// (via [ImageSource.gallery])
-  gallery
+  gallery,
 }

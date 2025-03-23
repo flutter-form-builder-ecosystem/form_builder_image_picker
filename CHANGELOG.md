@@ -1,3 +1,12 @@
+## 4.3.0
+
+### Features
+
+* Compatibility with `flutter_form_builder` 10.0.x. See details on their [changelog](https://pub.dev/packages/flutter_form_builder/changelog)
+* Set minimal Flutter version to 3.29.0
+* Set minimal Dart version to 3.7.0
+* Update example platform setup. Added support to macOS and Windows.
+
 ## 4.2.0
 
 * Set minimal Flutter version to 3.27.0

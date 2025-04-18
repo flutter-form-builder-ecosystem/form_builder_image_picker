@@ -1,3 +1,7 @@
+## 4.3.1
+
+* Fix: Downgrade `async` to allow compatible with `flutter_test` on Flutter 3.29 stable version [#81](https://github.com/flutter-form-builder-ecosystem/form_builder_image_picker/issues/81)
+
 ## 4.3.0
 
 ### Features

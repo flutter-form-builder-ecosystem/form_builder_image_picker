@@ -15,9 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue),
       home: MyHomePage(),
     );
   }
@@ -27,10 +25,7 @@ class ApiImage {
   final String imageUrl;
   final String id;
 
-  ApiImage({
-    required this.imageUrl,
-    required this.id,
-  });
+  ApiImage({required this.imageUrl, required this.id});
 }
 
 class MyHomePage extends StatelessWidget {
@@ -41,9 +36,7 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('FormBuilderImagePicker Example'),
-      ),
+      appBar: AppBar(title: const Text('FormBuilderImagePicker Example')),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Center(
@@ -56,8 +49,8 @@ class MyHomePage extends StatelessWidget {
                 children: <Widget>[
                   FormBuilderImagePicker(
                     name: 'photos',
-                    displayCustomType: (obj) =>
-                        obj is ApiImage ? obj.imageUrl : obj,
+                    displayCustomType:
+                        (obj) => obj is ApiImage ? obj.imageUrl : obj,
                     decoration: const InputDecoration(labelText: 'Pick Photos'),
                     maxImages: 5,
                     previewAutoSizeWidth: true,
@@ -76,8 +69,8 @@ class MyHomePage extends StatelessWidget {
                   const SizedBox(height: 15),
                   FormBuilderImagePicker(
                     name: 'singlePhotoWithDecoration',
-                    displayCustomType: (obj) =>
-                        obj is ApiImage ? obj.imageUrl : obj,
+                    displayCustomType:
+                        (obj) => obj is ApiImage ? obj.imageUrl : obj,
                     decoration: const InputDecoration(
                       labelText: 'Pick Single Photo With Decoration Visible',
                     ),
@@ -90,11 +83,12 @@ class MyHomePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 15),
                   const Text(
-                      'Single Photo with no decoration, and previewAutoSizeWidth=true'),
+                    'Single Photo with no decoration, and previewAutoSizeWidth=true',
+                  ),
                   FormBuilderImagePicker(
                     name: 'singlePhoto',
-                    displayCustomType: (obj) =>
-                        obj is ApiImage ? obj.imageUrl : obj,
+                    displayCustomType:
+                        (obj) => obj is ApiImage ? obj.imageUrl : obj,
                     // decoration: const InputDecoration(
                     //   labelText: 'Pick Photos',
                     // ),
@@ -111,18 +105,15 @@ class MyHomePage extends StatelessWidget {
                   ),
                   FormBuilderImagePicker(
                     name: 'singleAvatarPhoto',
-                    displayCustomType: (obj) =>
-                        obj is ApiImage ? obj.imageUrl : obj,
-                    decoration: const InputDecoration(
-                      labelText: 'Pick Photos',
-                    ),
-                    transformImageWidget: (context, displayImage) => Card(
-                      shape: const CircleBorder(),
-                      clipBehavior: Clip.antiAlias,
-                      child: SizedBox.expand(
-                        child: displayImage,
-                      ),
-                    ),
+                    displayCustomType:
+                        (obj) => obj is ApiImage ? obj.imageUrl : obj,
+                    decoration: const InputDecoration(labelText: 'Pick Photos'),
+                    transformImageWidget:
+                        (context, displayImage) => Card(
+                          shape: const CircleBorder(),
+                          clipBehavior: Clip.antiAlias,
+                          child: SizedBox.expand(child: displayImage),
+                        ),
                     showDecoration: false,
                     maxImages: 1,
                     previewAutoSizeWidth: false,
@@ -144,62 +135,71 @@ class MyHomePage extends StatelessWidget {
                   FormBuilderImagePicker(
                     name: 'onlyCamera',
                     decoration: const InputDecoration(
-                        labelText: 'Pick Photos (only from camera)'),
+                      labelText: 'Pick Photos (only from camera)',
+                    ),
                     availableImageSources: const [ImageSourceOption.camera],
                   ),
                   const SizedBox(height: 15),
                   FormBuilderImagePicker(
                     name: 'onlyGallery',
                     decoration: const InputDecoration(
-                        labelText: 'Pick Photos (only from gallery)'),
+                      labelText: 'Pick Photos (only from gallery)',
+                    ),
                     availableImageSources: const [ImageSourceOption.gallery],
                   ),
                   FormBuilderImagePicker(
                     decoration: const InputDecoration(
-                        labelText: 'Pick Photos (with custom view)'),
+                      labelText: 'Pick Photos (with custom view)',
+                    ),
                     name: 'CupertinoActionSheet',
-                    optionsBuilder: (cameraPicker, galleryPicker) =>
-                        CupertinoActionSheet(
-                      title: const Text('Image'),
-                      message: const Text('Pick an image from given options'),
-                      actions: [
-                        CupertinoActionSheetAction(
-                          isDefaultAction: true,
-                          onPressed: () {
-                            cameraPicker();
-                          },
-                          child: const Text('Camera'),
+                    optionsBuilder:
+                        (cameraPicker, galleryPicker) => CupertinoActionSheet(
+                          title: const Text('Image'),
+                          message: const Text(
+                            'Pick an image from given options',
+                          ),
+                          actions: [
+                            CupertinoActionSheetAction(
+                              isDefaultAction: true,
+                              onPressed: () {
+                                cameraPicker();
+                              },
+                              child: const Text('Camera'),
+                            ),
+                            CupertinoActionSheetAction(
+                              isDefaultAction: true,
+                              onPressed: () {
+                                galleryPicker();
+                              },
+                              child: const Text('Gallery'),
+                            ),
+                          ],
                         ),
-                        CupertinoActionSheetAction(
-                          isDefaultAction: true,
-                          onPressed: () {
-                            galleryPicker();
-                          },
-                          child: const Text('Gallery'),
-                        )
-                      ],
-                    ),
-                    onTap: (child) => showCupertinoModalPopup(
-                      context: context,
-                      builder: (context) => child,
-                    ),
+                    onTap:
+                        (child) => showCupertinoModalPopup(
+                          context: context,
+                          builder: (context) => child,
+                        ),
                   ),
                   FormBuilderImagePicker(
                     name: 'customPreview',
                     maxImages: null,
-                    previewBuilder: (context, images, addButton) =>
-                        ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        minHeight: 130,
-                        maxHeight: 500,
-                      ),
-                      child: GridView.extent(
-                        maxCrossAxisExtent: 130,
-                        mainAxisSpacing: 4,
-                        crossAxisSpacing: 4,
-                        children: [...images, if (addButton != null) addButton],
-                      ),
-                    ),
+                    previewBuilder:
+                        (context, images, addButton) => ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            minHeight: 130,
+                            maxHeight: 500,
+                          ),
+                          child: GridView.extent(
+                            maxCrossAxisExtent: 130,
+                            mainAxisSpacing: 4,
+                            crossAxisSpacing: 4,
+                            children: [
+                              ...images,
+                              if (addButton != null) addButton,
+                            ],
+                          ),
+                        ),
                   ),
                   ElevatedButton(
                     child: const Text('Submit'),
@@ -214,7 +214,7 @@ class MyHomePage extends StatelessWidget {
                     onPressed: () {
                       _formKey.currentState?.reset();
                     },
-                  )
+                  ),
                 ],
               ),
             ),

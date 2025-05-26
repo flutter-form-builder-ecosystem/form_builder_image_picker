@@ -5,18 +5,20 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.6.0 <4.0.0'
-  flutter: ">=3.27.0"
+  sdk: '>=3.7.0 <4.0.0'
+  flutter: ">=3.29.0"
 
 dependencies:
   flutter:
     sdk: flutter  
-  flutter_form_builder: ^9.6.0
+  flutter_form_builder: ^10.0.1
   form_builder_image_picker:
     path: ../
 
 dev_dependencies:
   flutter_lints: ">=5.0.0 <6.0.0"
+  flutter_test: 
+    sdk: flutter
 
 flutter:
   uses-material-design: true

@@ -40,8 +40,10 @@ class ImageSourceBottomSheet extends StatefulWidget {
   final bool preventPop;
 
   final Widget Function(
-          FutureVoidCallBack cameraPicker, FutureVoidCallBack galleryPicker)?
-      optionsBuilder;
+    FutureVoidCallBack cameraPicker,
+    FutureVoidCallBack galleryPicker,
+  )?
+  optionsBuilder;
 
   const ImageSourceBottomSheet({
     super.key,
@@ -130,10 +132,7 @@ class ImageSourceBottomSheetState extends State<ImageSourceBottomSheet> {
       ),
     );
     if (widget.preventPop) {
-      res = PopScope(
-        canPop: !_isPickingImage,
-        child: res,
-      );
+      res = PopScope(canPop: !_isPickingImage, child: res);
     }
     return res;
   }

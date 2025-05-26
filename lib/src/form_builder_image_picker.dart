@@ -92,7 +92,7 @@ class FormBuilderImagePicker extends FormBuilderFieldDecoration<List<dynamic>> {
   final int? maxImages;
 
   final Widget Function(BuildContext context, Widget displayImage)?
-      transformImageWidget;
+  transformImageWidget;
 
   /// Icon for camera option on bottom sheet
   final Widget cameraIcon;
@@ -124,8 +124,10 @@ class FormBuilderImagePicker extends FormBuilderFieldDecoration<List<dynamic>> {
   /// call cameraPicker() to picks image from camera
   /// call galleryPicker() to picks image from gallery
   final Widget Function(
-          FutureVoidCallBack cameraPicker, FutureVoidCallBack galleryPicker)?
-      optionsBuilder;
+    FutureVoidCallBack cameraPicker,
+    FutureVoidCallBack galleryPicker,
+  )?
+  optionsBuilder;
 
   final WidgetBuilder? loadingWidget;
 
@@ -175,159 +177,153 @@ class FormBuilderImagePicker extends FormBuilderFieldDecoration<List<dynamic>> {
       ImageSourceOption.camera,
       ImageSourceOption.gallery,
     ],
-  })  : assert(maxImages == null || maxImages >= 0),
-        super(
-          builder: (FormFieldState<List<dynamic>?> field) {
-            final state = field as FormBuilderImagePickerState;
-            final theme = Theme.of(state.context);
-            final disabledColor = theme.disabledColor;
-            final primaryColor = theme.primaryColor;
-            final value = state.effectiveValue;
-            final canUpload = state.enabled && !state.hasMaxImages;
+  }) : assert(maxImages == null || maxImages >= 0),
+       super(
+         builder: (FormFieldState<List<dynamic>?> field) {
+           final state = field as FormBuilderImagePickerState;
+           final theme = Theme.of(state.context);
+           final disabledColor = theme.disabledColor;
+           final primaryColor = theme.primaryColor;
+           final value = state.effectiveValue;
+           final canUpload = state.enabled && !state.hasMaxImages;
 
-            /// how many items to display in the list view (including upload btn)
-            final itemCount = value.length + (canUpload ? 1 : 0);
+           /// how many items to display in the list view (including upload btn)
+           final itemCount = value.length + (canUpload ? 1 : 0);
 
-            Widget addButtonBuilder(
-              BuildContext context,
-            ) =>
-                GestureDetector(
-                  key: UniqueKey(),
-                  child: placeholderWidget ??
-                      SizedBox(
-                        width: previewWidth,
-                        child: placeholderImage != null
-                            ? Image(
-                                image: placeholderImage,
-                              )
-                            : Container(
-                                color: (state.enabled
-                                    ? backgroundColor ??
-                                        primaryColor.withAlpha(50)
-                                    : disabledColor),
-                                child: Icon(
-                                  icon ?? Icons.camera_enhance,
-                                  color: state.enabled
-                                      ? iconColor ?? primaryColor
-                                      : disabledColor,
-                                ),
-                              ),
-                      ),
-                  onTap: () async {
-                    final remainingImages =
-                        maxImages == null ? null : maxImages - value.length;
+           Widget addButtonBuilder(BuildContext context) => GestureDetector(
+             key: UniqueKey(),
+             child:
+                 placeholderWidget ??
+                 SizedBox(
+                   width: previewWidth,
+                   child:
+                       placeholderImage != null
+                           ? Image(image: placeholderImage)
+                           : Container(
+                             color:
+                                 (state.enabled
+                                     ? backgroundColor ??
+                                         primaryColor.withAlpha(50)
+                                     : disabledColor),
+                             child: Icon(
+                               icon ?? Icons.camera_enhance,
+                               color:
+                                   state.enabled
+                                       ? iconColor ?? primaryColor
+                                       : disabledColor,
+                             ),
+                           ),
+                 ),
+             onTap: () async {
+               final remainingImages =
+                   maxImages == null ? null : maxImages - value.length;
 
-                    final imageSourceSheet = ImageSourceBottomSheet(
-                      maxHeight: maxHeight,
-                      maxWidth: maxWidth,
-                      preventPop: preventPop,
-                      remainingImages: remainingImages,
-                      imageQuality: imageQuality,
-                      preferredCameraDevice: preferredCameraDevice,
-                      bottomSheetPadding: bottomSheetPadding,
-                      cameraIcon: cameraIcon,
-                      cameraLabel: cameraLabel,
-                      galleryIcon: galleryIcon,
-                      galleryLabel: galleryLabel,
-                      optionsBuilder: optionsBuilder,
-                      availableImageSources: availableImageSources,
-                      onImageSelected: (image) {
-                        state.focus();
-                        field.didChange([...value, ...image]);
-                        Navigator.pop(state.context);
-                      },
-                    );
-                    onTap != null
-                        ? onTap(imageSourceSheet)
-                        : await showModalBottomSheet<void>(
-                            context: state.context,
-                            builder: (_) {
-                              return imageSourceSheet;
-                            },
-                          );
-                  },
-                );
+               final imageSourceSheet = ImageSourceBottomSheet(
+                 maxHeight: maxHeight,
+                 maxWidth: maxWidth,
+                 preventPop: preventPop,
+                 remainingImages: remainingImages,
+                 imageQuality: imageQuality,
+                 preferredCameraDevice: preferredCameraDevice,
+                 bottomSheetPadding: bottomSheetPadding,
+                 cameraIcon: cameraIcon,
+                 cameraLabel: cameraLabel,
+                 galleryIcon: galleryIcon,
+                 galleryLabel: galleryLabel,
+                 optionsBuilder: optionsBuilder,
+                 availableImageSources: availableImageSources,
+                 onImageSelected: (image) {
+                   state.focus();
+                   field.didChange([...value, ...image]);
+                   Navigator.pop(state.context);
+                 },
+               );
+               onTap != null
+                   ? onTap(imageSourceSheet)
+                   : await showModalBottomSheet<void>(
+                     context: state.context,
+                     builder: (_) {
+                       return imageSourceSheet;
+                     },
+                   );
+             },
+           );
 
-            Widget itemBuilder(
-              BuildContext context,
-              dynamic item,
-              int index,
-            ) {
-              bool checkIfItemIsCustomType(dynamic e) => !(e is XFile ||
-                  e is String ||
-                  e is Uint8List ||
-                  e is ImageProvider ||
-                  e is Widget);
+           Widget itemBuilder(BuildContext context, dynamic item, int index) {
+             bool checkIfItemIsCustomType(dynamic e) =>
+                 !(e is XFile ||
+                     e is String ||
+                     e is Uint8List ||
+                     e is ImageProvider ||
+                     e is Widget);
 
-              final itemCustomType = checkIfItemIsCustomType(item);
-              var displayItem = item;
-              if (itemCustomType && displayCustomType != null) {
-                displayItem = displayCustomType(item);
-              }
-              assert(
-                !checkIfItemIsCustomType(displayItem),
-                'Display item must be of type [Uint8List], [XFile], [String] (url), [ImageProvider] or [Widget]. '
-                'Consider using displayCustomType to handle the type: ${displayItem.runtimeType}',
-              );
+             final itemCustomType = checkIfItemIsCustomType(item);
+             var displayItem = item;
+             if (itemCustomType && displayCustomType != null) {
+               displayItem = displayCustomType(item);
+             }
+             assert(
+               !checkIfItemIsCustomType(displayItem),
+               'Display item must be of type [Uint8List], [XFile], [String] (url), [ImageProvider] or [Widget]. '
+               'Consider using displayCustomType to handle the type: ${displayItem.runtimeType}',
+             );
 
-              final displayWidget = displayItem is Widget
-                  ? displayItem
-                  : displayItem is ImageProvider
-                      ? Image(image: displayItem, fit: fit)
-                      : displayItem is Uint8List
-                          ? Image.memory(displayItem, fit: fit)
-                          : displayItem is String
-                              ? Image.network(
-                                  displayItem,
-                                  fit: fit,
-                                )
-                              : XFileImage(
-                                  file: displayItem,
-                                  fit: fit,
-                                  loadingWidget: loadingWidget,
-                                );
-              return Stack(
-                key: ObjectKey(item),
-                children: <Widget>[
-                  transformImageWidget?.call(context, displayWidget) ??
-                      displayWidget,
-                  if (state.enabled)
-                    PositionedDirectional(
-                      top: 0,
-                      end: 0,
-                      child: InkWell(
-                        onTap: () {
-                          state.focus();
-                          field.didChange(
-                            value.toList()..removeAt(index),
-                          );
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.all(3),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.withValues(alpha: .7),
-                            shape: BoxShape.circle,
-                          ),
-                          alignment: Alignment.center,
-                          height: 22,
-                          width: 22,
-                          child: const Icon(
-                            Icons.close,
-                            size: 18,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              );
-            }
+             final displayWidget =
+                 displayItem is Widget
+                     ? displayItem
+                     : displayItem is ImageProvider
+                     ? Image(image: displayItem, fit: fit)
+                     : displayItem is Uint8List
+                     ? Image.memory(displayItem, fit: fit)
+                     : displayItem is String
+                     ? Image.network(displayItem, fit: fit)
+                     : XFileImage(
+                       file: displayItem,
+                       fit: fit,
+                       loadingWidget: loadingWidget,
+                     );
+             return Stack(
+               key: ObjectKey(item),
+               children: <Widget>[
+                 transformImageWidget?.call(context, displayWidget) ??
+                     displayWidget,
+                 if (state.enabled)
+                   PositionedDirectional(
+                     top: 0,
+                     end: 0,
+                     child: InkWell(
+                       onTap: () {
+                         state.focus();
+                         field.didChange(value.toList()..removeAt(index));
+                       },
+                       child: Container(
+                         margin: const EdgeInsets.all(3),
+                         decoration: BoxDecoration(
+                           color: Colors.grey.withValues(alpha: .7),
+                           shape: BoxShape.circle,
+                         ),
+                         alignment: Alignment.center,
+                         height: 22,
+                         width: 22,
+                         child: const Icon(
+                           Icons.close,
+                           size: 18,
+                           color: Colors.white,
+                         ),
+                       ),
+                     ),
+                   ),
+               ],
+             );
+           }
 
-            if (previewBuilder != null) {
-              return Builder(builder: (context) {
-                final widgets = value
-                    .mapIndexed((i, v) => itemBuilder(context, v, i))
-                    .toList();
+           if (previewBuilder != null) {
+             return Builder(
+               builder: (context) {
+                 final widgets =
+                     value
+                         .mapIndexed((i, v) => itemBuilder(context, v, i))
+                         .toList();
 
                 return previewBuilder(
                   context,
@@ -338,53 +334,52 @@ class FormBuilderImagePicker extends FormBuilderFieldDecoration<List<dynamic>> {
               });
             }
 
-            final child = SizedBox(
-              height: previewHeight,
-              child: itemCount == 0
-                  ? null //empty list
-                  : itemCount == 1 //has a single item,
-                      ? canUpload
-                          ? addButtonBuilder(state.context) //upload button
-                          : SizedBox(
-                              width: previewAutoSizeWidth ? null : previewWidth,
-                              child: itemBuilder(state.context, value.first, 0),
-                            )
-                      : ListView.builder(
-                          itemExtent:
-                              previewAutoSizeWidth ? null : previewWidth,
-                          scrollDirection: Axis.horizontal,
-                          itemCount: itemCount,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              margin: previewMargin,
-                              child: Builder(
-                                builder: (context) {
-                                  if (index < value.length) {
-                                    final item = value[index];
-                                    return itemBuilder(context, item, index);
-                                  }
-                                  return addButtonBuilder(context);
-                                },
-                              ),
-                            );
-                          },
-                        ),
-            );
-            return showDecoration
-                ? InputDecorator(
-                    decoration: state.decoration,
-                    child: child,
-                  )
-                : child;
-          },
-        );
+           final child = SizedBox(
+             height: previewHeight,
+             child:
+                 itemCount == 0
+                     ? null //empty list
+                     : itemCount ==
+                         1 //has a single item,
+                     ? canUpload
+                         ? addButtonBuilder(state.context) //upload button
+                         : SizedBox(
+                           width: previewAutoSizeWidth ? null : previewWidth,
+                           child: itemBuilder(state.context, value.first, 0),
+                         )
+                     : ListView.builder(
+                       itemExtent: previewAutoSizeWidth ? null : previewWidth,
+                       scrollDirection: Axis.horizontal,
+                       itemCount: itemCount,
+                       itemBuilder: (context, index) {
+                         return Container(
+                           margin: previewMargin,
+                           child: Builder(
+                             builder: (context) {
+                               if (index < value.length) {
+                                 final item = value[index];
+                                 return itemBuilder(context, item, index);
+                               }
+                               return addButtonBuilder(context);
+                             },
+                           ),
+                         );
+                       },
+                     ),
+           );
+           return showDecoration
+               ? InputDecorator(decoration: state.decoration, child: child)
+               : child;
+         },
+       );
 
   @override
   FormBuilderImagePickerState createState() => FormBuilderImagePickerState();
 }
 
-class FormBuilderImagePickerState extends FormBuilderFieldDecorationState<
-    FormBuilderImagePicker, List<dynamic>> {
+class FormBuilderImagePickerState
+    extends
+        FormBuilderFieldDecorationState<FormBuilderImagePicker, List<dynamic>> {
   List<dynamic> get effectiveValue =>
       value?.where((element) => element != null).toList() ?? [];
 

@@ -56,6 +56,7 @@ class MyHomePage extends StatelessWidget {
                     previewAutoSizeWidth: true,
                     previewMargin: const EdgeInsetsDirectional.only(end: 8),
                     fit: BoxFit.cover,
+                    optionsClipBehavior: Clip.hardEdge,
                     initialValue: [
                       'https://images.pexels.com/photos/7078045/pexels-photo-7078045.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
                       const Text('this is an image\nas a widget !'),

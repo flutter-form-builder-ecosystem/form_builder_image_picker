@@ -10,20 +10,20 @@ funding:
   - https://opencollective.com/flutter-form-builder-ecosystem
 
 environment:
-  sdk: '>=3.7.0 <4.0.0'
-  flutter: ">=3.29.0"
+  sdk: '>=3.8.0 <4.0.0'
+  flutter: ">=3.32.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  flutter_form_builder: ^10.0.1
+  flutter_form_builder: ^10.1.0
   # This version would be max, the same version used on flutter_test
   # https://github.com/flutter/flutter/blob/stable/packages/flutter_test/pubspec.yaml#L39N
-  async: ^2.12.0
+  async: ^2.13.0
   image_picker: ^1.1.2
 
 dev_dependencies:
-  flutter_lints: ">=5.0.0 <6.0.0"
+  flutter_lints: ">=6.0.0"
 
 platforms:
   android:

@@ -199,27 +199,24 @@ class FormBuilderImagePicker extends FormBuilderFieldDecoration<List<dynamic>> {
                  placeholderWidget ??
                  SizedBox(
                    width: previewWidth,
-                   child:
-                       placeholderImage != null
-                           ? Image(image: placeholderImage)
-                           : Container(
-                             color:
-                                 (state.enabled
-                                     ? backgroundColor ??
-                                         primaryColor.withAlpha(50)
-                                     : disabledColor),
-                             child: Icon(
-                               icon ?? Icons.camera_enhance,
-                               color:
-                                   state.enabled
-                                       ? iconColor ?? primaryColor
-                                       : disabledColor,
-                             ),
+                   child: placeholderImage != null
+                       ? Image(image: placeholderImage)
+                       : Container(
+                           color: (state.enabled
+                               ? backgroundColor ?? primaryColor.withAlpha(50)
+                               : disabledColor),
+                           child: Icon(
+                             icon ?? Icons.camera_enhance,
+                             color: state.enabled
+                                 ? iconColor ?? primaryColor
+                                 : disabledColor,
                            ),
+                         ),
                  ),
              onTap: () async {
-               final remainingImages =
-                   maxImages == null ? null : maxImages - value.length;
+               final remainingImages = maxImages == null
+                   ? null
+                   : maxImages - value.length;
 
                final imageSourceSheet = ImageSourceBottomSheet(
                  maxHeight: maxHeight,
@@ -244,12 +241,12 @@ class FormBuilderImagePicker extends FormBuilderFieldDecoration<List<dynamic>> {
                onTap != null
                    ? onTap(imageSourceSheet)
                    : await showModalBottomSheet<void>(
-                     context: state.context,
-                     clipBehavior: optionsClipBehavior,
-                     builder: (_) {
-                       return imageSourceSheet;
-                     },
-                   );
+                       context: state.context,
+                       clipBehavior: optionsClipBehavior,
+                       builder: (_) {
+                         return imageSourceSheet;
+                       },
+                     );
              },
            );
 
@@ -272,20 +269,19 @@ class FormBuilderImagePicker extends FormBuilderFieldDecoration<List<dynamic>> {
                'Consider using displayCustomType to handle the type: ${displayItem.runtimeType}',
              );
 
-             final displayWidget =
-                 displayItem is Widget
-                     ? displayItem
-                     : displayItem is ImageProvider
-                     ? Image(image: displayItem, fit: fit)
-                     : displayItem is Uint8List
-                     ? Image.memory(displayItem, fit: fit)
-                     : displayItem is String
-                     ? Image.network(displayItem, fit: fit)
-                     : XFileImage(
-                       file: displayItem,
-                       fit: fit,
-                       loadingWidget: loadingWidget,
-                     );
+             final displayWidget = displayItem is Widget
+                 ? displayItem
+                 : displayItem is ImageProvider
+                 ? Image(image: displayItem, fit: fit)
+                 : displayItem is Uint8List
+                 ? Image.memory(displayItem, fit: fit)
+                 : displayItem is String
+                 ? Image.network(displayItem, fit: fit)
+                 : XFileImage(
+                     file: displayItem,
+                     fit: fit,
+                     loadingWidget: loadingWidget,
+                   );
              return Stack(
                key: ObjectKey(item),
                children: <Widget>[
@@ -324,10 +320,9 @@ class FormBuilderImagePicker extends FormBuilderFieldDecoration<List<dynamic>> {
            if (previewBuilder != null) {
              return Builder(
                builder: (context) {
-                 final widgets =
-                     value
-                         .mapIndexed((i, v) => itemBuilder(context, v, i))
-                         .toList();
+                 final widgets = value
+                     .mapIndexed((i, v) => itemBuilder(context, v, i))
+                     .toList();
 
                 return previewBuilder(
                   context,
@@ -340,36 +335,35 @@ class FormBuilderImagePicker extends FormBuilderFieldDecoration<List<dynamic>> {
 
            final child = SizedBox(
              height: previewHeight,
-             child:
-                 itemCount == 0
-                     ? null //empty list
-                     : itemCount ==
-                         1 //has a single item,
-                     ? canUpload
-                         ? addButtonBuilder(state.context) //upload button
-                         : SizedBox(
+             child: itemCount == 0
+                 ? null //empty list
+                 : itemCount ==
+                       1 //has a single item,
+                 ? canUpload
+                       ? addButtonBuilder(state.context) //upload button
+                       : SizedBox(
                            width: previewAutoSizeWidth ? null : previewWidth,
                            child: itemBuilder(state.context, value.first, 0),
                          )
-                     : ListView.builder(
-                       itemExtent: previewAutoSizeWidth ? null : previewWidth,
-                       scrollDirection: Axis.horizontal,
-                       itemCount: itemCount,
-                       itemBuilder: (context, index) {
-                         return Container(
-                           margin: previewMargin,
-                           child: Builder(
-                             builder: (context) {
-                               if (index < value.length) {
-                                 final item = value[index];
-                                 return itemBuilder(context, item, index);
-                               }
-                               return addButtonBuilder(context);
-                             },
-                           ),
-                         );
-                       },
-                     ),
+                 : ListView.builder(
+                     itemExtent: previewAutoSizeWidth ? null : previewWidth,
+                     scrollDirection: Axis.horizontal,
+                     itemCount: itemCount,
+                     itemBuilder: (context, index) {
+                       return Container(
+                         margin: previewMargin,
+                         child: Builder(
+                           builder: (context) {
+                             if (index < value.length) {
+                               final item = value[index];
+                               return itemBuilder(context, item, index);
+                             }
+                             return addButtonBuilder(context);
+                           },
+                         ),
+                       );
+                     },
+                   ),
            );
            return showDecoration
                ? InputDecorator(decoration: state.decoration, child: child)

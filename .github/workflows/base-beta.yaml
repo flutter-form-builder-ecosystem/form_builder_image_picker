@@ -20,10 +20,14 @@ concurrency:
 
 jobs:
   build:
+    permissions:
+      contents: read
     uses: flutter-form-builder-ecosystem/.github/.github/workflows/minimal-quality.yaml@main
     with:
       fvm-flavor: beta
   example:
+    permissions:
+      contents: read
     uses: flutter-form-builder-ecosystem/.github/.github/workflows/build-examples.yaml@main
     with:
       fvm-flavor: beta

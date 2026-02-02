@@ -38,7 +38,11 @@ class FormBuilderImagePicker extends FormBuilderFieldDecoration<List<dynamic>> {
   final EdgeInsetsGeometry? previewMargin;
 
   /// May be supplied for a fully custom display of the image preview
-  final Widget Function(BuildContext, List<Widget> children, Widget? addButton)?
+  final Widget Function(
+    BuildContext context,
+    List<Widget> children,
+    Widget? addButton,
+  )?
   previewBuilder;
 
   /// placeholder image displayed when picking a new image
@@ -313,54 +317,60 @@ class FormBuilderImagePicker extends FormBuilderFieldDecoration<List<dynamic>> {
              );
            }
 
-           if (previewBuilder != null) {
-             return Builder(
-               builder: (context) {
-                 final widgets = value
-                     .mapIndexed((i, v) => itemBuilder(context, v, i))
-                     .toList();
+           final child = previewBuilder != null
+               ? Builder(
+                   builder: (context) {
+                     final widgets = value
+                         .mapIndexed((i, v) => itemBuilder(context, v, i))
+                         .toList();
 
-                 return previewBuilder(
-                   context,
-                   widgets,
-                   canUpload ? addButtonBuilder(context) : null,
-                 );
-               },
-             );
-           }
-
-           final child = SizedBox(
-             height: previewHeight,
-             child: itemCount == 0
-                 ? null //empty list
-                 : itemCount ==
-                       1 //has a single item,
-                 ? canUpload
-                       ? addButtonBuilder(state.context) //upload button
-                       : SizedBox(
-                           width: previewAutoSizeWidth ? null : previewWidth,
-                           child: itemBuilder(state.context, value.first, 0),
-                         )
-                 : ListView.builder(
-                     itemExtent: previewAutoSizeWidth ? null : previewWidth,
-                     scrollDirection: Axis.horizontal,
-                     itemCount: itemCount,
-                     itemBuilder: (context, index) {
-                       return Container(
-                         margin: previewMargin,
-                         child: Builder(
-                           builder: (context) {
-                             if (index < value.length) {
-                               final item = value[index];
-                               return itemBuilder(context, item, index);
-                             }
-                             return addButtonBuilder(context);
+                     return previewBuilder(
+                       context,
+                       widgets,
+                       canUpload ? addButtonBuilder(context) : null,
+                     );
+                   },
+                 )
+               : SizedBox(
+                   height: previewHeight,
+                   child: itemCount == 0
+                       ? null //empty list
+                       : itemCount ==
+                             1 //has a single item,
+                       ? canUpload
+                             ? addButtonBuilder(state.context) //upload button
+                             : SizedBox(
+                                 width: previewAutoSizeWidth
+                                     ? null
+                                     : previewWidth,
+                                 child: itemBuilder(
+                                   state.context,
+                                   value.first,
+                                   0,
+                                 ),
+                               )
+                       : ListView.builder(
+                           itemExtent: previewAutoSizeWidth
+                               ? null
+                               : previewWidth,
+                           scrollDirection: Axis.horizontal,
+                           itemCount: itemCount,
+                           itemBuilder: (context, index) {
+                             return Container(
+                               margin: previewMargin,
+                               child: Builder(
+                                 builder: (context) {
+                                   if (index < value.length) {
+                                     final item = value[index];
+                                     return itemBuilder(context, item, index);
+                                   }
+                                   return addButtonBuilder(context);
+                                 },
+                               ),
+                             );
                            },
                          ),
-                       );
-                     },
-                   ),
-           );
+                 );
            return showDecoration
                ? InputDecorator(decoration: state.decoration, child: child)
                : child;
@@ -390,6 +400,7 @@ class XFileImage extends StatefulWidget {
     this.fit,
     this.loadingWidget,
   });
+
   final XFile file;
   final BoxFit? fit;
   final WidgetBuilder? loadingWidget;

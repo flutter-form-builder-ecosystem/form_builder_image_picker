@@ -4,6 +4,7 @@
 * Update constraints to Dart 3.10
 * Update README
 * Add optionsClipBehavior parameter for customizing clip behavior on image picker options. [PR #83](https://github.com/flutter-form-builder-ecosystem/form_builder_image_picker/pull/83) thanks to [@untillnesss](https://github.com/untillnesss)
+* Solved issue: [Form crash when opening Camera on IOS iOS 26: (2025) #89](https://github.com/flutter-form-builder-ecosystem/form_builder_image_picker/issues/89)
 
 ## 4.3.1
 

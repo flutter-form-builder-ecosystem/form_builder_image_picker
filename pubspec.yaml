@@ -1,6 +1,6 @@
 name: form_builder_image_picker
 description: Images picker field for FlutterFormBuilder. Get images from gallery or camera
-version: 4.3.1
+version: 4.4.0
 repository: https://github.com/flutter-form-builder-ecosystem/form_builder_image_picker
 issue_tracker: https://github.com/flutter-form-builder-ecosystem/form_builder_image_picker/issues
 homepage: https://github.com/flutter-form-builder-ecosystem

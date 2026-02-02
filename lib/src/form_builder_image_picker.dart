@@ -38,8 +38,12 @@ class FormBuilderImagePicker extends FormBuilderFieldDecoration<List<dynamic>> {
   final EdgeInsetsGeometry? previewMargin;
 
   /// May be supplied for a fully custom display of the image preview
-  final Widget Function(BuildContext, List<Widget> children, Widget? addButton)?
-  previewBuilder;
+  final Widget Function(
+    BuildContext,
+    List<Widget> children,
+    Widget? addButton,
+    FormBuilderImagePickerState state,
+  )? previewBuilder;
 
   /// placeholder image displayed when picking a new image
   final ImageProvider? placeholderImage;
@@ -320,14 +324,14 @@ class FormBuilderImagePicker extends FormBuilderFieldDecoration<List<dynamic>> {
                      .mapIndexed((i, v) => itemBuilder(context, v, i))
                      .toList();
 
-                 return previewBuilder(
-                   context,
-                   widgets,
-                   canUpload ? addButtonBuilder(context) : null,
-                 );
-               },
-             );
-           }
+                return previewBuilder(
+                  context,
+                  widgets,
+                  canUpload ? addButtonBuilder(context) : null,
+                  state,
+                );
+              });
+            }
 
            final child = SizedBox(
              height: previewHeight,

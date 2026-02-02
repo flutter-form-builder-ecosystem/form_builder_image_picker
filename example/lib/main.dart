@@ -193,10 +193,7 @@ class MyHomePage extends StatelessWidget {
                             maxCrossAxisExtent: 130,
                             mainAxisSpacing: 4,
                             crossAxisSpacing: 4,
-                            children: [
-                              ...images,
-                              if (addButton != null) addButton,
-                            ],
+                            children: [...images, ?addButton],
                           ),
                         ),
                   ),

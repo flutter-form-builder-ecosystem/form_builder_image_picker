@@ -5,7 +5,7 @@ Images picker field for FlutterFormBuilder. Get images from gallery or camera.
 [![Pub Version](https://img.shields.io/pub/v/form_builder_image_picker?logo=flutter&style=for-the-badge)](https://pub.dev/packages/form_builder_image_picker)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/flutter-form-builder-ecosystem/form_builder_image_picker/base.yaml?branch=main&logo=github&style=for-the-badge)](https://github.com/flutter-form-builder-ecosystem/form_builder_image_picker/actions/workflows/base.yaml)
 [![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/flutter-form-builder-ecosystem/form_builder_image_picker?logo=codefactor&style=for-the-badge)](https://www.codefactor.io/repository/github/flutter-form-builder-ecosystem/form_builder_image_picker)
-[![Codecov](https://img.shields.io/codecov/c/github/flutter-form-builder-ecosystem/form_builder_image_picker?logo=codecov&style=for-the-badge)](https://codecov.io/gh/flutter-form-builder-ecosystem/form_builder_image_picker/)
+
 ___
 
 - [Features](#features)
@@ -31,7 +31,7 @@ ___
 
 ### Setup
 
-Since this package makes use of [image_picker](https://pub.dev/packages/image_picker) package, for platform specific setup, follow the instructions [here](https://github.com/flutter/plugins/tree/main/packages/image_picker/image_picker#installation)
+Since this package makes use of [image_picker](https://pub.dev/packages/image_picker) package, for platform specific setup, [follow the instructions](https://github.com/flutter/plugins/tree/main/packages/image_picker/image_picker#installation)
 
 ### Basic use
 

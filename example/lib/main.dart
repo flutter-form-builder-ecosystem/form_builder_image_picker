@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_image_picker/form_builder_image_picker.dart';
+import 'package:material_ui/material_ui.dart';
 
 Future<void> main() async {
   runApp(const MyApp());
@@ -62,8 +62,7 @@ class MyHomePage extends StatelessWidget {
                       const Text('this is an image\nas a widget !'),
                       ApiImage(
                         id: 'whatever',
-                        imageUrl:
-                            'https://images.pexels.com/photos/8311418/pexels-photo-8311418.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260',
+                        imageUrl: 'https://images.pexels.com/photos/8311418/pexels-photo-8311418.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260',
                       ),
                     ],
                   ),

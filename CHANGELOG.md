@@ -1,3 +1,8 @@
+## Unreleased
+
+* Migrate to `flutter_form_builder` 11.0.0 and `material_ui` input decoration.
+* Require Flutter 3.47.0 and Dart 3.13.0.
+
 ## 4.4.0
 
 * Update constraints to Flutter 3.38

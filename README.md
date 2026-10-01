@@ -33,16 +33,20 @@ ___
 
 Since this package makes use of [image_picker](https://pub.dev/packages/image_picker) package, for platform specific setup, [follow the instructions](https://github.com/flutter/plugins/tree/main/packages/image_picker/image_picker#installation)
 
+This version uses `flutter_form_builder` 11 and `material_ui`. Use `material_ui.MaterialApp` in your app, and pass `material_ui.InputDecoration` to the picker. See the [material_ui migration guide](https://pub.dev/packages/material_ui#migrating-existing-code-to-this-package) if your app also uses legacy Flutter Material widgets.
+
 ### Basic use
 
 ```dart
+import 'package:material_ui/material_ui.dart' as material_ui;
+
 FormBuilder(
   child: Column(
     mainAxisAlignment: MainAxisAlignment.center,
     children: <Widget>[
       FormBuilderImagePicker(
         name: 'photos',
-        decoration: const InputDecoration(labelText: 'Pick Photos'),
+        decoration: const material_ui.InputDecoration(labelText: 'Pick Photos'),
         maxImages: 1,
       ),
     ],
